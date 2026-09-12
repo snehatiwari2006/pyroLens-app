@@ -15,9 +15,9 @@ export default function MapControls({ layers, onToggle, showImpact, onToggleImpa
         <button key={k} onClick={() => onToggle(k)}
           className="flex items-center gap-1.5 text-xs font-medium rounded-md px-2.5 py-1.5 border"
           style={{
-            borderColor: layers[k] ? "#0F2A43" : "#DFE4E9",
-            background: layers[k] ? "#EEF2F6" : "#fff",
-            color: layers[k] ? "#0F2A43" : "#5B6B7A",
+            borderColor: layers[k] ? "#C2410C" : "#E8E4DC",
+            background: layers[k] ? "#FFF7ED" : "#fff",
+            color: layers[k] ? "#9A3412" : "#5E6573",
           }}>
           <Icon size={13} /> {l}
         </button>
@@ -25,9 +25,9 @@ export default function MapControls({ layers, onToggle, showImpact, onToggleImpa
       <button onClick={onToggleImpact}
         className="flex items-center gap-1.5 text-xs font-medium rounded-md px-2.5 py-1.5 border ml-auto"
         style={{
-          borderColor: showImpact ? "#C2600B" : "#DFE4E9",
-          background: showImpact ? "#FBEEE0" : "#fff",
-          color: showImpact ? "#C2600B" : "#5B6B7A",
+          borderColor: showImpact ? "#C2410C" : "#E8E4DC",
+          background: showImpact ? "#FFF7ED" : "#fff",
+          color: showImpact ? "#9A3412" : "#5E6573",
         }}>
         <Compass size={13} /> Impact overlay
       </button>

@@ -22,7 +22,7 @@ export default function Incidents() {
             </thead>
             <tbody>
               {incidents.map((i) => (
-                <tr key={i.id} className="hover:bg-gray-50 border-b border-line">
+                <tr key={i.id} className="hover:bg-[#FAF7F2] border-b border-line">
                   <td className="px-4 py-3 font-medium text-ink">{i.id}</td>
                   <td className="px-4 py-3 text-slateink">{i.location}</td>
                   <td className="px-4 py-3 text-slateink">{i.detectionTime}</td>
@@ -32,7 +32,7 @@ export default function Incidents() {
                   <td className="px-4 py-3"><StatusBadge status={i.status} /></td>
                   <td className="px-4 py-3 text-slateink">{i.assignedTeam}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => openIncident(i)} className="text-xs font-medium flex items-center gap-1 text-navy">
+                    <button onClick={() => openIncident(i)} className="text-xs font-medium flex items-center gap-1 text-ink hover:text-[#C2410C]">
                       <Eye size={13} /> View
                     </button>
                   </td>

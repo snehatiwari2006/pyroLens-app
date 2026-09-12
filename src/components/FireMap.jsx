@@ -28,7 +28,7 @@ export default function FireMap({ incidents, layers, onSelect, selectedId, showI
 
         {layers.thermal && incidents.filter((i) => i.persistenceScore > 60).map((i) => (
           <Circle key={"p" + i.id} center={[i.lat, i.lng]} radius={700}
-            pathOptions={{ color: "#215C8E", fillOpacity: 0, weight: 1, dashArray: "4 4" }} />
+            pathOptions={{ color: "#D97706", fillOpacity: 0, weight: 1.5, dashArray: "4 4" }} />
         ))}
 
         {layers.thermalEvents && incidents.map((i) => (

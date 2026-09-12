@@ -33,7 +33,7 @@ export default function DecisionSupport() {
       <div className="flex flex-wrap gap-2 mb-5">
         {active.map((i) => (
           <button key={i.id} onClick={() => setSelId(i.id)} className="text-xs font-medium rounded-md px-2.5 py-1.5 border"
-            style={{ borderColor: selId === i.id ? "#0F2A43" : "#DFE4E9", color: selId === i.id ? "#0F2A43" : "#5B6B7A", background: selId === i.id ? "#EEF2F6" : "#fff" }}>
+            style={{ borderColor: selId === i.id ? "#C2410C" : "#E8E4DC", color: selId === i.id ? "#9A3412" : "#5E6573", background: selId === i.id ? "#FFF7ED" : "#fff" }}>
             {i.id}
           </button>
         ))}
@@ -62,7 +62,7 @@ export default function DecisionSupport() {
           <div className="flex flex-wrap items-center gap-1.5 text-xs mb-5 text-slateink">
             {WORKFLOW.map((s, idx) => (
               <Fragment key={s}>
-                <span className="rounded-full px-2 py-1 bg-[#EEF2F6] text-navy">{s}</span>
+                <span className="rounded-full px-2.5 py-1 bg-[#F5F1EB] text-ink font-medium">{s}</span>
                 {idx < WORKFLOW.length - 1 && <ArrowRight size={12} />}
               </Fragment>
             ))}

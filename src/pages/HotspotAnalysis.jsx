@@ -18,7 +18,7 @@ export default function HotspotAnalysis() {
             </thead>
             <tbody>
               {HOTSPOT_REGIONS.map((r) => (
-                <tr key={r.name} className="border-b border-line">
+                <tr key={r.name} className="border-b border-line hover:bg-[#FAF7F2]">
                   <td className="px-4 py-3 font-medium text-ink">{r.name}</td>
                   <td className="px-4 py-3 text-slateink">{r.count}</td>
                   <td className="px-4 py-3">

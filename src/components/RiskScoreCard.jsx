@@ -10,12 +10,12 @@ export function RiskScoreDial({ score }) {
   return (
     <div className="flex items-center gap-5">
       <svg width="140" height="140" viewBox="0 0 140 140">
-        <circle cx="70" cy="70" r={r} fill="none" stroke="#DFE4E9" strokeWidth="12" />
+        <circle cx="70" cy="70" r={r} fill="none" stroke="#E8E4DC" strokeWidth="12" />
         <circle cx="70" cy="70" r={r} fill="none" stroke={s.color} strokeWidth="12"
           strokeDasharray={c} strokeDashoffset={off} strokeLinecap="round"
           transform="rotate(-90 70 70)" />
-        <text x="70" y="66" textAnchor="middle" fontSize="28" fontWeight="700" fill="#1C2733">{score}</text>
-        <text x="70" y="86" textAnchor="middle" fontSize="11" fill="#5B6B7A">/ 100</text>
+        <text x="70" y="66" textAnchor="middle" fontSize="28" fontWeight="700" fill="#0F1E2E">{score}</text>
+        <text x="70" y="86" textAnchor="middle" fontSize="11" fill="#5E6573">/ 100</text>
       </svg>
       <div>
         <SeverityPill level={level} />
@@ -28,7 +28,7 @@ export function RiskScoreDial({ score }) {
 }
 
 export function FactorBar({ label, value, icon: Icon }) {
-  const color = value === "VERY HIGH" || value === "HIGH" ? "#B3261E" : value === "MODERATE" ? "#9A7B0A" : "#1E7A4C";
+  const color = value === "VERY HIGH" || value === "HIGH" ? "#B3261E" : value === "MODERATE" ? "#B45309" : "#1E7A4C";
   const pct = value === "VERY HIGH" ? 95 : value === "HIGH" ? 78 : value === "MODERATE" ? 52 : 28;
   return (
     <div className="flex items-center gap-3 py-2">

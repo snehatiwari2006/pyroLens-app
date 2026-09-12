@@ -18,7 +18,7 @@ export default function EmergencyResponse() {
           <h3 className="font-semibold text-sm mb-3 text-ink">Recommended response sequence</h3>
           {SEQUENCE.map((s, idx) => (
             <div key={s} className="flex items-start gap-2.5 mb-3">
-              <div className="h-6 w-6 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 bg-[#EEF2F6] text-navy">{idx + 1}</div>
+              <div className="h-6 w-6 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 bg-[#F5F1EB] text-ink">{idx + 1}</div>
               <div className="text-sm pt-0.5 text-ink">{s}</div>
             </div>
           ))}

@@ -29,7 +29,7 @@ export default function Header({ notifCount = 6 }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="h-16 flex items-center justify-between gap-4">
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5 shrink-0">
-            <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-navy">
+            <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-[#C2410C]">
               <Flame size={18} color="#fff" />
             </div>
             <div className="text-left">
@@ -43,7 +43,7 @@ export default function Header({ notifCount = 6 }) {
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slateink" />
               <input value={search} onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search incident, location, coordinates…"
-                className="w-full text-sm rounded-md border border-line pl-9 pr-3 py-2 outline-none focus:border-navy" />
+                className="w-full text-sm rounded-md border border-line pl-9 pr-3 py-2 outline-none focus:border-[#C2410C]" />
             </div>
           </form>
 
@@ -75,15 +75,15 @@ export default function Header({ notifCount = 6 }) {
           {NAV.map((g) => (
             <div key={g.group} className="relative" onMouseEnter={() => setOpenGroup(g.group)} onMouseLeave={() => setOpenGroup(null)}>
               <button className="flex items-center gap-1 px-3 py-3 text-sm font-medium"
-                style={{ color: isActiveGroup(g) ? "#0F2A43" : "#1C2733" }}>
+                style={{ color: isActiveGroup(g) ? "#C2410C" : "#0F1E2E" }}>
                 {g.group} <ChevronDown size={13} />
               </button>
               {openGroup === g.group && (
                 <div className="absolute left-0 top-full w-64 rounded-lg border border-line shadow-lg py-1.5 z-40 bg-white">
                   {g.items.map((it) => (
                     <button key={it.path} onClick={() => { navigate(it.path); setOpenGroup(null); }}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left hover:bg-gray-50"
-                      style={{ color: location.pathname === it.path ? "#0F2A43" : "#1C2733", background: location.pathname === it.path ? "#EEF2F6" : "transparent" }}>
+                      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left hover:bg-[#FAF7F2]"
+                      style={{ color: location.pathname === it.path ? "#C2410C" : "#0F1E2E", background: location.pathname === it.path ? "#FFF7ED" : "transparent" }}>
                       <it.icon size={15} /> {it.label}
                     </button>
                   ))}
@@ -109,7 +109,7 @@ export default function Header({ notifCount = 6 }) {
               {g.items.map((it) => (
                 <button key={it.path} onClick={() => { navigate(it.path); setMobileOpen(false); }}
                   className="w-full flex items-center gap-2.5 py-2.5 text-sm text-left"
-                  style={{ color: location.pathname === it.path ? "#0F2A43" : "#1C2733" }}>
+                  style={{ color: location.pathname === it.path ? "#C2410C" : "#0F1E2E" }}>
                   <it.icon size={15} /> {it.label}
                 </button>
               ))}

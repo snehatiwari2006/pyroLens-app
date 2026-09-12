@@ -8,15 +8,15 @@ export const TIME_SERIES = [
 export const CLASS_DIST = [
   { name: "Industrial Fire", value: 34, color: "#B3261E" },
   { name: "Vegetation Fire", value: 22, color: "#1E7A4C" },
-  { name: "Agricultural Burning", value: 18, color: "#9A7B0A" },
-  { name: "Persistent Thermal", value: 15, color: "#215C8E" },
-  { name: "False Positive", value: 8, color: "#5B6B7A" },
-  { name: "Unknown Anomaly", value: 3, color: "#C2600B" },
+  { name: "Agricultural Burning", value: 18, color: "#B45309" },
+  { name: "Persistent Thermal", value: 15, color: "#D97706" },
+  { name: "False Positive", value: 8, color: "#5E6573" },
+  { name: "Unknown Anomaly", value: 3, color: "#C2410C" },
 ];
 
 export const RISK_DIST = [
-  { name: "Critical", value: 6, color: "#B3261E" }, { name: "High", value: 14, color: "#C2600B" },
-  { name: "Medium", value: 21, color: "#9A7B0A" }, { name: "Low", value: 33, color: "#1E7A4C" },
+  { name: "Critical", value: 6, color: "#B3261E" }, { name: "High", value: 14, color: "#C2410C" },
+  { name: "Medium", value: 21, color: "#B45309" }, { name: "Low", value: 33, color: "#1E7A4C" },
 ];
 
 export const SEASONAL = [

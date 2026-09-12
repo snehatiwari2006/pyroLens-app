@@ -31,13 +31,13 @@ export default function Dashboard() {
           <Card padded={false}>
             <div className="flex items-center justify-between px-5 pt-5">
               <h3 className="font-semibold text-ink">Priority incidents</h3>
-              <button onClick={() => navigate("/incidents")} className="text-xs font-medium flex items-center gap-1 text-navy">
+              <button onClick={() => navigate("/incidents")} className="text-xs font-medium flex items-center gap-1 text-ink hover:text-[#C2410C]">
                 View all <ChevronRight size={13} />
               </button>
             </div>
             <div className="divide-y divide-line">
               {active.slice(0, 5).map((i) => (
-                <button key={i.id} onClick={() => openIncident(i)} className="w-full text-left px-5 py-3.5 flex items-center gap-3 hover:bg-gray-50">
+                <button key={i.id} onClick={() => openIncident(i)} className="w-full text-left px-5 py-3.5 flex items-center gap-3 hover:bg-[#FAF7F2]">
                   <SeverityPill level={i.risk} size="sm" />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate text-ink">{i.name}</div>

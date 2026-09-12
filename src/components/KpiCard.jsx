@@ -2,8 +2,8 @@ import React from "react";
 import Card from "./Card.jsx";
 
 const TONES = {
-  navy: { bg: "#EEF2F6", fg: "#0F2A43" }, critical: { bg: "#FBEAE9", fg: "#B3261E" },
-  high: { bg: "#FBEEE0", fg: "#C2600B" }, info: { bg: "#E9F1F8", fg: "#215C8E" }, safe: { bg: "#E7F4EC", fg: "#1E7A4C" },
+  navy: { bg: "#F5F1EB", fg: "#0F1E2E" }, critical: { bg: "#FBEAE9", fg: "#B3261E" },
+  high: { bg: "#FFF4EB", fg: "#C2410C" }, info: { bg: "#FEF3C7", fg: "#B45309" }, safe: { bg: "#E7F4EC", fg: "#1E7A4C" },
 };
 
 export default function KpiCard({ icon: Icon, label, value, sub, tone = "navy" }) {

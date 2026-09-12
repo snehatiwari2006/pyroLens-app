@@ -41,11 +41,11 @@ export default function ThermalPersistence() {
         <h3 className="font-semibold mb-4 text-sm text-ink">Fire events over time</h3>
         <ResponsiveContainer width="100%" height={240}>
           <AreaChart data={TIME_SERIES}>
-            <CartesianGrid stroke="#DFE4E9" vertical={false} />
-            <XAxis dataKey="d" tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={{ stroke: "#DFE4E9" }} tickLine={false} />
-            <YAxis tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={false} tickLine={false} />
+            <CartesianGrid stroke="#E8E4DC" vertical={false} />
+            <XAxis dataKey="d" tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={{ stroke: "#E8E4DC" }} tickLine={false} />
+            <YAxis tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={false} tickLine={false} />
             <Tooltip />
-            <Area type="monotone" dataKey="events" stroke="#0F2A43" fill="#EEF2F6" strokeWidth={2} name="All events" />
+            <Area type="monotone" dataKey="events" stroke="#0F1E2E" fill="#F5F1EB" strokeWidth={2} name="All events" />
             <Area type="monotone" dataKey="industrial" stroke="#B3261E" fill="#FBEAE9" strokeWidth={2} name="Industrial fires" />
             <Legend />
           </AreaChart>

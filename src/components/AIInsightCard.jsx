@@ -3,7 +3,7 @@ import { Info, Sparkles } from "lucide-react";
 
 export function Disclaimer({ compact }) {
   return (
-    <div className={`flex items-start gap-2.5 rounded-lg border border-line bg-[#F9FAFB] ${compact ? "p-3" : "p-4"}`}>
+    <div className={`flex items-start gap-2.5 rounded-lg border border-line bg-[#FAF7F2] ${compact ? "p-3" : "p-4"}`}>
       <Info size={16} className="mt-0.5 shrink-0 text-slateink" />
       <p className="text-xs leading-relaxed text-slateink">
         AI-generated insights are decision-support recommendations and do not replace authorized

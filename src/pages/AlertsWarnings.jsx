@@ -24,7 +24,7 @@ export default function AlertsWarnings() {
       <div className="flex flex-wrap gap-2 mb-5">
         {FILTERS.map((f) => (
           <button key={f} onClick={() => setFilter(f)} className="text-xs font-medium rounded-md px-3 py-1.5 border"
-            style={{ borderColor: filter === f ? "#0F2A43" : "#DFE4E9", color: filter === f ? "#0F2A43" : "#5B6B7A", background: filter === f ? "#EEF2F6" : "#fff" }}>
+            style={{ borderColor: filter === f ? "#C2410C" : "#E8E4DC", color: filter === f ? "#9A3412" : "#5E6573", background: filter === f ? "#FFF7ED" : "#fff" }}>
             {f}
           </button>
         ))}

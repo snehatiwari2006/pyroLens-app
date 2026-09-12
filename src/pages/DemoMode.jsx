@@ -35,7 +35,7 @@ export default function DemoMode() {
         {DEMO_STEPS.map((s, idx) => (
           <div key={s} className="flex items-center gap-2">
             <div className="text-xs font-medium rounded-full px-3 py-1.5 border"
-              style={{ borderColor: idx <= step ? "#0F2A43" : "#DFE4E9", background: idx <= step ? "#0F2A43" : "#fff", color: idx <= step ? "#fff" : "#5B6B7A" }}>
+              style={{ borderColor: idx <= step ? "#C2410C" : "#E8E4DC", background: idx <= step ? "#C2410C" : "#fff", color: idx <= step ? "#fff" : "#5E6573" }}>
               {idx + 1}. {s}
             </div>
             {idx < DEMO_STEPS.length - 1 && <ChevronRight size={13} className="text-line" />}

@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function ConfidenceMeter({ value, label = "Confidence" }) {
-  const color = value >= 80 ? "#1E7A4C" : value >= 55 ? "#9A7B0A" : "#B3261E";
+  const color = value >= 80 ? "#1E7A4C" : value >= 55 ? "#B45309" : "#B3261E";
   return (
     <div>
       <div className="flex justify-between text-xs mb-1.5 text-slateink">

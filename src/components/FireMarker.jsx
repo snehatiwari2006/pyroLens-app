@@ -14,12 +14,12 @@ export default function FireMarker({ incident, onSelect, selected }) {
     >
       <Popup>
         <div style={{ minWidth: 180 }}>
-          <div style={{ fontSize: 11, color: "#5B6B7A" }}>{incident.id}</div>
-          <div style={{ fontWeight: 600, fontSize: 13 }}>{incident.name}</div>
-          <div style={{ fontSize: 12, margin: "4px 0" }}>
+          <div style={{ fontSize: 11, color: "#5E6573" }}>{incident.id}</div>
+          <div style={{ fontWeight: 600, fontSize: 13, color: "#0F1E2E" }}>{incident.name}</div>
+          <div style={{ fontSize: 12, margin: "4px 0", color: "#0F1E2E" }}>
             FRP: <strong>{incident.frp}</strong> · Confidence: <strong>{incident.confidence}%</strong>
           </div>
-          <div style={{ fontSize: 12 }}>Est. impact: <strong>{incident.impactDirection}</strong></div>
+          <div style={{ fontSize: 12, color: "#0F1E2E" }}>Est. impact: <strong>{incident.impactDirection}</strong></div>
         </div>
       </Popup>
     </CircleMarker>

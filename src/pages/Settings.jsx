@@ -21,7 +21,7 @@ export default function Settings() {
           <Card key={s.t}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-[#EEF2F6]"><s.icon size={16} className="text-navy" /></div>
+                <div className="h-9 w-9 rounded-lg flex items-center justify-center bg-[#F5F1EB]"><s.icon size={16} className="text-ink" /></div>
                 <div><div className="text-sm font-medium text-ink">{s.t}</div><div className="text-xs text-slateink">{s.d}</div></div>
               </div>
               <ChevronRight size={16} className="text-slateink" />

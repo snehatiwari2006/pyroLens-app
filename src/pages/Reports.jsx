@@ -25,7 +25,7 @@ export default function Reports() {
       <div className="flex flex-wrap gap-2 mb-5">
         {incidents.map((i) => (
           <button key={i.id} onClick={() => setSelId(i.id)} className="text-xs font-medium rounded-md px-2.5 py-1.5 border"
-            style={{ borderColor: selId === i.id ? "#0F2A43" : "#DFE4E9", color: selId === i.id ? "#0F2A43" : "#5B6B7A", background: selId === i.id ? "#EEF2F6" : "#fff" }}>
+            style={{ borderColor: selId === i.id ? "#C2410C" : "#E8E4DC", color: selId === i.id ? "#9A3412" : "#5E6573", background: selId === i.id ? "#FFF7ED" : "#fff" }}>
             {i.id}
           </button>
         ))}
@@ -38,7 +38,7 @@ export default function Reports() {
           </div>
           <SeverityPill level={sel.risk} />
         </div>
-        <div className="h-40 rounded-lg border border-line flex items-center justify-center mb-5 text-xs bg-[#EAF0F4] text-slateink">
+        <div className="h-40 rounded-lg border border-line flex items-center justify-center mb-5 text-xs bg-[#FAF6EE] text-slateink">
           Map snapshot placeholder
         </div>
         <div className="grid sm:grid-cols-2 gap-4 text-sm mb-5">

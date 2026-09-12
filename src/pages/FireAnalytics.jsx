@@ -15,7 +15,7 @@ export default function FireAnalytics() {
           <div className="flex gap-1.5">
             {RANGES.map((r) => (
               <button key={r} onClick={() => setRange(r)} className="text-xs font-medium rounded-md px-2.5 py-1.5 border"
-                style={{ borderColor: range === r ? "#0F2A43" : "#DFE4E9", color: range === r ? "#0F2A43" : "#5B6B7A", background: range === r ? "#EEF2F6" : "#fff" }}>{r}</button>
+                style={{ borderColor: range === r ? "#C2410C" : "#E8E4DC", color: range === r ? "#9A3412" : "#5E6573", background: range === r ? "#FFF7ED" : "#fff" }}>{r}</button>
             ))}
           </div>
         } />
@@ -24,11 +24,11 @@ export default function FireAnalytics() {
           <h3 className="font-semibold text-sm mb-3 text-ink">Fire events over time ({range})</h3>
           <ResponsiveContainer width="100%" height={230}>
             <LineChart data={TIME_SERIES}>
-              <CartesianGrid stroke="#DFE4E9" vertical={false} />
-              <XAxis dataKey="d" tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={{ stroke: "#DFE4E9" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={false} tickLine={false} />
+              <CartesianGrid stroke="#E8E4DC" vertical={false} />
+              <XAxis dataKey="d" tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={{ stroke: "#E8E4DC" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={false} tickLine={false} />
               <Tooltip />
-              <Line type="monotone" dataKey="events" stroke="#0F2A43" strokeWidth={2} dot={false} name="All events" />
+              <Line type="monotone" dataKey="events" stroke="#0F1E2E" strokeWidth={2} dot={false} name="All events" />
               <Line type="monotone" dataKey="industrial" stroke="#B3261E" strokeWidth={2} dot={false} name="Industrial" />
               <Legend />
             </LineChart>
@@ -51,9 +51,9 @@ export default function FireAnalytics() {
           <h3 className="font-semibold text-sm mb-3 text-ink">Risk distribution across zones</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={RISK_DIST}>
-              <CartesianGrid stroke="#DFE4E9" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={{ stroke: "#DFE4E9" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={false} tickLine={false} />
+              <CartesianGrid stroke="#E8E4DC" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={{ stroke: "#E8E4DC" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={false} tickLine={false} />
               <Tooltip />
               <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                 {RISK_DIST.map((e, i) => <Cell key={i} fill={e.color} />)}
@@ -65,11 +65,11 @@ export default function FireAnalytics() {
           <h3 className="font-semibold text-sm mb-3 text-ink">Seasonal trend</h3>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={SEASONAL}>
-              <CartesianGrid stroke="#DFE4E9" vertical={false} />
-              <XAxis dataKey="m" tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={{ stroke: "#DFE4E9" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#5B6B7A" }} axisLine={false} tickLine={false} />
+              <CartesianGrid stroke="#E8E4DC" vertical={false} />
+              <XAxis dataKey="m" tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={{ stroke: "#E8E4DC" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: "#5E6573" }} axisLine={false} tickLine={false} />
               <Tooltip />
-              <Area type="monotone" dataKey="count" stroke="#215C8E" fill="#E9F1F8" strokeWidth={2} />
+              <Area type="monotone" dataKey="count" stroke="#C2410C" fill="#FFF4EB" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </Card>

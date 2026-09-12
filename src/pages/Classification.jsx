@@ -25,8 +25,8 @@ export default function Classification() {
           <div className="p-4 border-b border-line text-xs font-semibold text-slateink">SELECT EVENT</div>
           <div className="max-h-[420px] overflow-y-auto divide-y divide-line">
             {incidents.map((i) => (
-              <button key={i.id} onClick={() => setSelId(i.id)} className="w-full text-left px-4 py-3 hover:bg-gray-50"
-                style={{ background: selId === i.id ? "#EEF2F6" : "transparent" }}>
+              <button key={i.id} onClick={() => setSelId(i.id)} className="w-full text-left px-4 py-3 hover:bg-[#FAF7F2]"
+                style={{ background: selId === i.id ? "#FFF7ED" : "transparent", borderLeft: selId === i.id ? "3px solid #C2410C" : "3px solid transparent" }}>
                 <div className="text-sm font-medium text-ink">{i.id}</div>
                 <div className="text-xs text-slateink">{i.name}</div>
               </button>
@@ -41,7 +41,7 @@ export default function Classification() {
             <div className="grid sm:grid-cols-3 gap-3 mt-5">
               {CATEGORIES.map((cat) => (
                 <div key={cat} className="text-xs rounded-md px-2.5 py-2 border text-center"
-                  style={{ borderColor: cat === sel.type ? "#0F2A43" : "#DFE4E9", color: cat === sel.type ? "#0F2A43" : "#5B6B7A", background: cat === sel.type ? "#EEF2F6" : "transparent" }}>
+                  style={{ borderColor: cat === sel.type ? "#C2410C" : "#E8E4DC", color: cat === sel.type ? "#9A3412" : "#5E6573", background: cat === sel.type ? "#FFF7ED" : "transparent" }}>
                   {cat}
                 </div>
               ))}

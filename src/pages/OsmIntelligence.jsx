@@ -21,7 +21,7 @@ export default function OsmIntelligence() {
           return (
             <Card key={key}>
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#EEF2F6]"><Icon size={18} className="text-navy" /></div>
+                <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#F5F1EB]"><Icon size={18} className="text-ink" /></div>
                 <div><div className="text-xl font-semibold text-ink">{count}</div><div className="text-xs text-slateink">{LABELS[key]}</div></div>
               </div>
             </Card>

@@ -22,7 +22,7 @@ export default function ImpactAnalysis() {
       <div className="flex flex-wrap gap-2 mb-5">
         {active.map((i) => (
           <button key={i.id} onClick={() => setSelId(i.id)} className="text-xs font-medium rounded-md px-2.5 py-1.5 border"
-            style={{ borderColor: selId === i.id ? "#0F2A43" : "#DFE4E9", color: selId === i.id ? "#0F2A43" : "#5B6B7A", background: selId === i.id ? "#EEF2F6" : "#fff" }}>
+            style={{ borderColor: selId === i.id ? "#C2410C" : "#E8E4DC", color: selId === i.id ? "#9A3412" : "#5E6573", background: selId === i.id ? "#FFF7ED" : "#fff" }}>
             {i.id}
           </button>
         ))}
@@ -31,19 +31,19 @@ export default function ImpactAnalysis() {
         <div className="lg:col-span-2">
           <Card>
             <div className="grid sm:grid-cols-2 gap-6 items-center">
-              <div className="relative h-56 rounded-lg border border-line flex items-center justify-center bg-[#EAF0F4]">
+              <div className="relative h-56 rounded-lg border border-line flex items-center justify-center bg-[#FAF6EE]">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <circle cx="50" cy="50" r="34" fill="#FBEAE9" opacity="0.7" />
                   <circle cx="50" cy="50" r="22" fill="#FBEEE0" opacity="0.8" />
-                  <circle cx="50" cy="50" r="10" fill="#FBF3DC" />
+                  <circle cx="50" cy="50" r="10" fill="#FEF3C7" />
                   <circle cx="50" cy="50" r="4" fill="#B3261E" />
-                  <line x1="50" y1="50" x2="76" y2="24" stroke="#0F2A43" strokeWidth="1.6" markerEnd="url(#arrow)" />
+                  <line x1="50" y1="50" x2="76" y2="24" stroke="#C2410C" strokeWidth="1.8" markerEnd="url(#arrow)" />
                   <defs>
                     <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-                      <path d="M0,0 L6,3 L0,6 Z" fill="#0F2A43" />
+                      <path d="M0,0 L6,3 L0,6 Z" fill="#C2410C" />
                     </marker>
                   </defs>
-                  <text x="78" y="20" fontSize="6" fill="#0F2A43" fontWeight="700">{sel.impactDirection}</text>
+                  <text x="78" y="20" fontSize="6" fill="#C2410C" fontWeight="700">{sel.impactDirection}</text>
                 </svg>
                 <div className="absolute bottom-2 left-2 text-[10px] px-2 py-1 rounded bg-white/90 border border-line text-slateink">
                   Wind → {sel.windDir} at {sel.windSpeed}

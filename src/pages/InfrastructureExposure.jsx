@@ -30,7 +30,7 @@ export default function InfrastructureExposure() {
       <div className="flex flex-wrap gap-2 mb-5">
         {active.map((i) => (
           <button key={i.id} onClick={() => setSelId(i.id)} className="text-xs font-medium rounded-md px-2.5 py-1.5 border"
-            style={{ borderColor: selId === i.id ? "#0F2A43" : "#DFE4E9", color: selId === i.id ? "#0F2A43" : "#5B6B7A", background: selId === i.id ? "#EEF2F6" : "#fff" }}>
+            style={{ borderColor: selId === i.id ? "#C2410C" : "#E8E4DC", color: selId === i.id ? "#9A3412" : "#5E6573", background: selId === i.id ? "#FFF7ED" : "#fff" }}>
             {i.id}
           </button>
         ))}
@@ -39,7 +39,7 @@ export default function InfrastructureExposure() {
         {rows.map((r) => (
           <Card key={r.label}>
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#EEF2F6]"><r.icon size={18} className="text-navy" /></div>
+              <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-[#F5F1EB]"><r.icon size={18} className="text-ink" /></div>
               <div>
                 <div className="text-xl font-semibold text-ink">{r.value}</div>
                 <div className="text-xs text-slateink">Potentially exposed — {r.label.toLowerCase()}</div>
@@ -48,7 +48,7 @@ export default function InfrastructureExposure() {
           </Card>
         ))}
       </div>
-      <div className="rounded-lg border border-line p-4 text-sm flex items-start gap-2.5 bg-[#F9FAFB]">
+      <div className="rounded-lg border border-line p-4 text-sm flex items-start gap-2.5 bg-[#FAF7F2]">
         <Info size={16} className="mt-0.5 shrink-0 text-slateink" />
         <p className="text-slateink">
           Assets listed above fall within the estimated impact zone and are classified as
