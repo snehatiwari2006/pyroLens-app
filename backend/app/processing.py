@@ -18,6 +18,9 @@ async def assess_risk(event: ThermalEvent) -> RiskResponse:
 async def assess_impact(event: ThermalEvent) -> ImpactResponse:
     weather = await weather_provider.for_event(event)
     exposed = await osm_provider.exposure(event)
+    # Return the sampled weather alongside the exposure estimate so operational
+    # clients can explain the direction and confidence they display.
+    exposed["weather"] = weather
     settings = get_settings()
     spread = estimate_spread(event, weather, settings.terrain_raster_path, settings.landcover_raster_path)
     assumptions = [
