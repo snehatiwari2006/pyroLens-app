@@ -1,4 +1,5 @@
 """PyroLens API: ingestion, intelligence and decision-support endpoints."""
+import asyncio
 from datetime import datetime, timedelta, timezone
 import csv
 from io import StringIO
@@ -78,10 +79,24 @@ def require_role(*allowed_roles: str):
     return dependency
 
 
+async def _refresh_firms_after_startup() -> None:
+    """Populate a lightweight deployment without exposing a public write endpoint."""
+    try:
+        events = await firms_provider.fetch({})
+        accepted = repository.save_many(events)
+        repository.record_ingestion("firms", len(events), accepted)
+    except Exception as exc:
+        # A provider outage must not prevent the API from starting. The status
+        # endpoint reports this failed run without exposing provider details.
+        repository.record_ingestion("firms", 0, 0, status="failed", error=type(exc).__name__)
+
+
 @app.on_event("startup")
 async def startup() -> None:
-    # Database migrations belong in Alembic; demo data remains available while offline.
-    return None
+    # Render's small demo deployment has no worker process. Fetch once after
+    # startup so the public map has current observations to display.
+    if settings.auto_refresh_firms_on_start and settings.firms_api_key and not settings.use_celery:
+        asyncio.create_task(_refresh_firms_after_startup())
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])

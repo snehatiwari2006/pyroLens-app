@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     firms_days: int = 1
     firms_refresh_seconds: int = 300
     use_celery: bool = False
+    # Useful for small demo deployments without a separate Celery worker.
+    auto_refresh_firms_on_start: bool = False
     weather_base_url: str = "https://api.open-meteo.com/v1/forecast"
     weather_api_key: str | None = None
     osm_overpass_url: str = "https://overpass-api.de/api/interpreter"
