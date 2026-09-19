@@ -1,3 +1,12 @@
 node_modules
 dist
 .env
+.next
+.next-dev
+.next-dev-bhopal
+pyrolens.db
+backend/artifacts/*.joblib
+backend/.venv/
+backend/.venv313/
+__pycache__/
+*.py[cod]

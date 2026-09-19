@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flame, Search, RefreshCw, Bell, UserCircle2, Menu, X, ChevronDown } from "lucide-react";
 import { NAV } from "./navConfig.js";
-import { INCIDENTS } from "../data/incidents.js";
+import { useApp } from "../context/AppContext.jsx";
 
 export default function Header({ notifCount = 6 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -10,12 +10,13 @@ export default function Header({ notifCount = 6 }) {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const { incidents, refreshLiveEvents, refreshing, refreshError } = useApp();
 
   const doSearch = (e) => {
     e.preventDefault();
     const q = search.trim().toLowerCase();
     if (!q) return;
-    const hit = INCIDENTS.find(
+    const hit = incidents.find(
       (i) => i.id.toLowerCase().includes(q) || i.location.toLowerCase().includes(q) || i.name.toLowerCase().includes(q)
     );
     navigate("/incidents", { state: hit ? { incidentId: hit.id } : undefined });
@@ -48,7 +49,15 @@ export default function Header({ notifCount = 6 }) {
           </form>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            <button className="p-2 rounded-md hover:bg-gray-100 hidden sm:block" title="Refresh"><RefreshCw size={17} className="text-slateink" /></button>
+            <button
+              onClick={() => refreshLiveEvents().catch(() => {})}
+              disabled={refreshing}
+              className="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 hidden sm:block"
+              title={refreshError || "Refresh live NASA FIRMS detections"}
+              aria-label="Refresh live NASA FIRMS detections"
+            >
+              <RefreshCw size={17} className={`text-slateink ${refreshing ? "animate-spin" : ""}`} />
+            </button>
             <button className="p-2 rounded-md hover:bg-gray-100 relative" title="Notifications">
               <Bell size={17} className="text-slateink" />
               {notifCount > 0 && (

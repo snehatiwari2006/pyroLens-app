@@ -1,31 +1,28 @@
-// Backend-ready wrapper for NASA FIRMS (Fire Information for Resource
-// Management System). Currently returns mock data; replace the body of
-// each function with a real FIRMS API call (or a call to your own backend
-// that proxies FIRMS) when available.
+// NASA FIRMS (Fire Information for Resource Management System) calls are
+// proxied through the FastAPI backend so the MAP key never reaches the browser.
 import { INCIDENTS } from "../data/incidents.js";
-import { mockRequest } from "./api.js";
+import { apiFetch, apiFetchOr, mockRequest } from "./api.js";
+
+export async function refreshFirmsFeed() {
+  return apiFetch("/ingestions", {
+    method: "POST",
+    body: JSON.stringify({ source: "firms" }),
+  });
+}
+
+export async function getFirmsStatus() {
+  return apiFetch("/firms/status");
+}
 
 export async function getActiveThermalEvents() {
   // Real version: GET {BASE_URL}/firms/active
-  return mockRequest(INCIDENTS.filter((i) => i.status !== "Resolved"));
+  return apiFetchOr("/events?status=Active", () => mockRequest(INCIDENTS.filter((i) => i.status !== "Resolved")));
 }
 
 export async function getThermalEventById(id) {
-  return mockRequest(INCIDENTS.find((i) => i.id === id) || null);
+  return apiFetchOr(`/events/${id}`, () => mockRequest(INCIDENTS.find((i) => i.id === id) || null));
 }
 
 export async function getSatelliteFeedStatus() {
-  return mockRequest({
-    lastSync: "2 min ago",
-    detections24h: 27,
-    frpObservations: 412,
-    avgConfidence: 81,
-    satelliteObservations: 1248,
-    recordsProcessed: 9204,
-    dataFreshness: "< 5 min",
-    sources: [
-      { name: "NASA FIRMS — VIIRS", status: "Mock feed active" },
-      { name: "NASA FIRMS — MODIS", status: "Mock feed active" },
-    ],
-  });
+  return apiFetch("/feeds/status");
 }

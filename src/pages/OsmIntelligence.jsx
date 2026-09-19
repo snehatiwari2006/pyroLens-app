@@ -9,12 +9,14 @@ const LABELS = { industries: "Industries", hospitals: "Hospitals", schools: "Sch
 
 export default function OsmIntelligence() {
   const [infra, setInfra] = useState(null);
-  useEffect(() => { getInfrastructureLayers().then(setInfra); }, []);
-  if (!infra) return <div className="text-sm text-slateink">Loading OSM intelligence layers…</div>;
+  const [error, setError] = useState("");
+  useEffect(() => { getInfrastructureLayers().then(setInfra).catch((loadError) => setError(loadError.message)); }, []);
+  if (!infra) return <div className="rounded-md border border-high/30 bg-highBg px-3 py-2 text-sm text-high">{error ? `Live OSM service unavailable: ${error}` : "Loading OSM intelligence layers…"}</div>;
 
   return (
     <div>
-      <SectionHeader title="OSM intelligence" desc="Mock geographic infrastructure layers that feed exposure and risk assessment." />
+      <SectionHeader title="OSM intelligence" desc={`Live Bhopal infrastructure layers used for exposure and risk assessment. Source: ${infra.source}.`} />
+      {infra.error && <div className="mb-4 rounded-md border border-high/30 bg-highBg px-3 py-2 text-xs text-high">Live OSM data is temporarily unavailable: {infra.error}. No estimated infrastructure counts are shown.</div>}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {Object.entries(infra.counts).map(([key, count]) => {
           const Icon = ICONS[key] || Building2;

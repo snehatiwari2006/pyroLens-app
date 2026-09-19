@@ -18,7 +18,7 @@ export default function Reports() {
       <SectionHeader title="Incident reports" desc="Generate a structured summary of an incident for briefings and records."
         action={
           <div className="flex gap-2">
-            <button className="btn-secondary !py-1.5 !px-3 text-xs"><Download size={13} />Download PDF</button>
+            <a href="/api/v1/reports/incidents.csv" className="btn-secondary !py-1.5 !px-3 text-xs"><Download size={13} />Download CSV</a>
             <button className="btn-secondary !py-1.5 !px-3 text-xs"><Share2 size={13} />Share</button>
           </div>
         } />
@@ -39,7 +39,7 @@ export default function Reports() {
           <SeverityPill level={sel.risk} />
         </div>
         <div className="h-40 rounded-lg border border-line flex items-center justify-center mb-5 text-xs bg-[#FAF6EE] text-slateink">
-          Map snapshot placeholder
+          Operational map snapshot is available from the Fire Intelligence Map.
         </div>
         <div className="grid sm:grid-cols-2 gap-4 text-sm mb-5">
           <Field label="Location" value={sel.location} />
@@ -60,7 +60,7 @@ export default function Reports() {
           <div className="text-ink">Initiate human verification, prioritize monitoring, and prepare warning workflow for potentially affected zones.</div>
         </div>
         <div className="flex justify-between text-xs pt-4 border-t border-line text-slateink">
-          <span>Data sources: NASA FIRMS (mock), OSM (mock), Weather service (mock)</span>
+          <span>Data sources: NASA FIRMS, OSM, Weather provider</span>
           <span>Generated {new Date().toLocaleString()}</span>
         </div>
       </Card>

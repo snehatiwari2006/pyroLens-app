@@ -56,7 +56,7 @@ function Shell() {
       </div>
 
       <footer className="border-t border-line py-6 text-center text-xs text-slateink">
-        PyroLens — AI-based detection and classification prototype for SIH. All data shown is simulated for demonstration.
+        PyroLens — AI-assisted fire detection and impact intelligence. Demo data is used when live providers are not configured.
       </footer>
 
       <FireDetailsDrawer incident={drawerIncident} onClose={closeDrawer} onIssueWarning={issueWarning} />

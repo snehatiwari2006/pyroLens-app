@@ -1,11 +1,12 @@
 import React from "react";
-import { Flame, ScanLine, Building2, Factory, Compass } from "lucide-react";
+import { Flame, ScanLine, Building2, Factory, Compass, Satellite } from "lucide-react";
 
 const TOGGLES = [
   ["thermalEvents", "Live thermal events", Flame],
   ["thermal", "Thermal persistence", ScanLine],
   ["infrastructure", "Critical infrastructure", Building2],
   ["industrial", "Industrial risk layer", Factory],
+  ["satellite", "NASA VIIRS imagery", Satellite],
 ];
 
 export default function MapControls({ layers, onToggle, showImpact, onToggleImpact }) {

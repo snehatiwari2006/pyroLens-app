@@ -9,8 +9,8 @@ import { SeverityPill } from "../components/StatusBadge.jsx";
 
 export default function FireMapPage() {
   const { incidents, openIncident } = useApp();
-  const [layers, setLayers] = useState({ thermalEvents: true, thermal: true, infrastructure: true, industrial: true });
-  const [selectedId, setSelectedId] = useState(incidents[0].id);
+  const [layers, setLayers] = useState({ thermalEvents: true, thermal: true, infrastructure: true, industrial: true, satellite: false });
+  const [selectedId, setSelectedId] = useState(null);
   const [showImpact, setShowImpact] = useState(true);
   const selected = incidents.find((i) => i.id === selectedId);
 
@@ -19,13 +19,13 @@ export default function FireMapPage() {
   return (
     <div>
       <SectionHeader title="Fire & impact intelligence map"
-        desc="Live thermal events, persistence, industrial risk and estimated impact zones on one operational picture." />
+        desc="Bhopal operational view: live thermal events, persistence, industrial risk and estimated impact zones." />
       <div className="grid lg:grid-cols-4 gap-5">
         <div className="lg:col-span-3 space-y-4">
           <MapControls layers={layers} onToggle={toggle} showImpact={showImpact} onToggleImpact={() => setShowImpact((v) => !v)} />
           <FireMap incidents={incidents} layers={layers} onSelect={setSelectedId} selectedId={selectedId} showImpact={showImpact} />
           <p className="text-xs text-slateink">
-            Live OpenStreetMap basemap with mock thermal event coordinates — ready to be swapped for a live GIS/satellite tile layer.
+            Bhopal basemap with live NASA FIRMS detections. An empty map means no active detection has been returned for the selected time window.
           </p>
         </div>
         <div className="space-y-4">

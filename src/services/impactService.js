@@ -5,18 +5,20 @@
 import { getIncidentById } from "../data/incidents.js";
 import { IMPACT_ZONE_RINGS } from "../data/impactData.js";
 import { getConditionsForIncident } from "./weatherService.js";
-import { mockRequest } from "./api.js";
+import { apiFetchOr, mockRequest } from "./api.js";
 
 export async function estimateImpact(incidentId) {
   const incident = getIncidentById(incidentId);
   if (!incident) return mockRequest(null);
-  const conditions = await getConditionsForIncident(incidentId);
-  return mockRequest({
+  return apiFetchOr(`/events/${incidentId}/impact`, async () => {
+    const conditions = await getConditionsForIncident(incidentId);
+    return mockRequest({
     direction: incident.impactDirection,
     confidence: incident.impactConfidence,
     horizon: incident.horizon,
     potentialImpactZoneKm2: incident.impactZone,
     conditions,
     zoneRings: IMPACT_ZONE_RINGS,
+    });
   });
 }

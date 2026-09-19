@@ -1,11 +1,10 @@
-// Backend-ready wrapper for OpenStreetMap / Overpass API geographic data.
-// Replace with real Overpass queries (industries, hospitals, schools, roads,
-// railway, fire stations) when integrating live GIS data.
+// OpenStreetMap / Overpass geographic data is queried by the backend, which
+// applies a bounded live Bhopal incident-area query and reports availability.
 import { INFRASTRUCTURE } from "../data/infrastructure.js";
-import { mockRequest } from "./api.js";
+import { apiFetch, apiFetchOr, mockRequest } from "./api.js";
 
 export async function getInfrastructureLayers() {
-  return mockRequest(INFRASTRUCTURE);
+  return apiFetch("/layers/infrastructure");
 }
 
 export async function getNearbyInfrastructure(lat, lng, radiusKm = 3) {

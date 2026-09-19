@@ -3,7 +3,9 @@
 // its network calls through this file so the rest of the app never talks
 // to fetch()/axios directly.
 
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+// Next.js proxies /api to FastAPI locally, while production can supply a
+// public API origin through NEXT_PUBLIC_API_BASE_URL.
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1";
 
 const MOCK_LATENCY_MS = 300;
 
@@ -20,6 +22,17 @@ export async function apiFetch(path, options = {}) {
     headers: { "Content-Type": "application/json", ...(options.headers || {}) },
     ...options,
   });
-  if (!res.ok) throw new Error(`API error ${res.status} on ${path}`);
+  if (!res.ok) {
+    const payload = await res.json().catch(() => null);
+    throw new Error(payload?.detail || `API error ${res.status} on ${path}`);
+  }
   return res.json();
+}
+
+export async function apiFetchOr(path, fallback, options = {}) {
+  try {
+    return await apiFetch(path, options);
+  } catch {
+    return typeof fallback === "function" ? fallback() : fallback;
+  }
 }

@@ -4,6 +4,7 @@ import { Satellite, Flame, ShieldAlert, SatelliteDish, BrainCircuit, Compass, Sh
 import Card from "../components/Card.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
 import BackgroundVisual from "../components/BackgroundVisual.jsx";
+import ArchitectureFlow from "../components/ArchitectureFlow.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -69,6 +70,8 @@ export default function Home() {
           </Card>
         ))}
       </div>
+
+      <ArchitectureFlow />
     </div>
   );
 }
