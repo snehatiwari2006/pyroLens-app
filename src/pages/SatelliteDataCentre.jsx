@@ -34,12 +34,12 @@ export default function SatelliteDataCentre() {
         <KpiCard icon={Activity} label="FRP observations" value={status.frpObservations} tone="high" />
         <KpiCard icon={Gauge} label="Avg. confidence" value={`${status.avgConfidence}%`} tone="info" />
         <KpiCard icon={Satellite} label="Satellite observations" value={status.satelliteObservations.toLocaleString()} tone="navy" />
-        <KpiCard icon={Globe2} label="Coverage" value="Bhopal pilot" tone="navy" />
+        <KpiCard icon={Globe2} label="Coverage" value="Central Africa pilot" tone="navy" />
         <KpiCard icon={Boxes} label="Records processed" value={status.recordsProcessed.toLocaleString()} tone="navy" />
         <KpiCard icon={Clock} label="Data freshness" value={status.dataFreshness} tone="safe" />
       </div>
       <Card className="mt-6">
-        <h3 className="font-semibold text-sm mb-1 text-ink">Bhopal live data sources</h3>
+        <h3 className="font-semibold text-sm mb-1 text-ink">Central Africa live data sources</h3>
         <p className="mb-3 text-xs text-slateink">Provider status is reported by the backend; zero detections means the selected NASA time window has no hotspot records.</p>
         {error && <p className="mb-3 rounded-md border border-critical/30 bg-criticalBg px-3 py-2 text-xs text-critical">{error}</p>}
         <div className="space-y-2 text-sm">

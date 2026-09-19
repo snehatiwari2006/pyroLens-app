@@ -7,8 +7,8 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "set NEXT_DIST_DIR=.next-dev-bhopal&& node ./node_modules/next/dist/bin/next dev",
-    "dev:clean": "set NEXT_DIST_DIR=.next-dev-bhopal&& node ./node_modules/next/dist/bin/next dev",
+    "dev": "set NEXT_DIST_DIR=.next-dev-africa&& node ./node_modules/next/dist/bin/next dev",
+    "dev:clean": "set NEXT_DIST_DIR=.next-dev-africa&& node ./node_modules/next/dist/bin/next dev",
     "build": "node ./node_modules/next/dist/bin/next build",
     "start": "node ./node_modules/next/dist/bin/next start",
     "preview": "node ./node_modules/next/dist/bin/next start"

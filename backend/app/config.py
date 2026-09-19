@@ -18,8 +18,9 @@ class Settings(BaseSettings):
     firms_api_key: str | None = None
     firms_base_url: str = "https://firms.modaps.eosdis.nasa.gov/api"
     firms_source: str = "VIIRS_NOAA21_NRT"
-    # Bhopal pilot operational boundary: west,south,east,north (WGS84).
-    firms_default_bbox: str = "77.30,23.05,77.55,23.35"
+    # Africa pilot fire belt (Zambia and southern DRC): west,south,east,north (WGS84).
+    # This focused boundary provides a richer live FIRMS feed than a continent-wide query.
+    firms_default_bbox: str = "22.0,-15.0,32.0,-8.0"
     firms_days: int = 1
     firms_refresh_seconds: int = 300
     use_celery: bool = False
@@ -27,9 +28,9 @@ class Settings(BaseSettings):
     weather_api_key: str | None = None
     osm_overpass_url: str = "https://overpass-api.de/api/interpreter"
     osm_live_enabled: bool = True
-    monitoring_area_name: str = "Bhopal, Madhya Pradesh"
-    monitoring_latitude: float = 23.2599
-    monitoring_longitude: float = 77.4126
+    monitoring_area_name: str = "Central Africa fire belt (Zambia–southern DRC)"
+    monitoring_latitude: float = -11.5
+    monitoring_longitude: float = 27.0
     terrain_raster_path: str | None = None
     landcover_raster_path: str | None = None
     object_store_endpoint: str = "localhost:9000"

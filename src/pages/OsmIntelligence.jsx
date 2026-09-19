@@ -15,7 +15,7 @@ export default function OsmIntelligence() {
 
   return (
     <div>
-      <SectionHeader title="OSM intelligence" desc={`Live Bhopal infrastructure layers used for exposure and risk assessment. Source: ${infra.source}.`} />
+      <SectionHeader title="OSM intelligence" desc={`Live Central Africa infrastructure layers used for exposure and risk assessment. Source: ${infra.source}.`} />
       {infra.error && <div className="mb-4 rounded-md border border-high/30 bg-highBg px-3 py-2 text-xs text-high">Live OSM data is temporarily unavailable: {infra.error}. No estimated infrastructure counts are shown.</div>}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {Object.entries(infra.counts).map(([key, count]) => {

@@ -15,7 +15,7 @@ keeping every live-data integration at a replaceable provider boundary.
 
 1. Request a free NASA FIRMS MAP key at [FIRMS MAP key](https://firms.modaps.eosdis.nasa.gov/api/map_key).
 2. In `backend/.env`, set `FIRMS_API_KEY` to the received key. Do not commit or share that key.
-3. Set the monitored bounding box as `FIRMS_DEFAULT_BBOX=west,south,east,north`. The included default is the Bhopal pilot boundary.
+3. Set the monitored bounding box as `FIRMS_DEFAULT_BBOX=west,south,east,north`. The included default is the Central Africa pilot boundary (Zambia–southern DRC).
 4. Restart the FastAPI server. The Satellite Data Centre will show **NASA FIRMS LIVE**; use its **Refresh NASA FIRMS** control to ingest current detections.
 
 For the direct Windows/Uvicorn workflow, `backend/.env` uses SQLite and localhost
@@ -42,7 +42,7 @@ The development command uses a separate `.next-dev` cache so an interrupted
 build cannot corrupt the production `.next` output. If an older server is
 already open, stop it with `Ctrl+C` before starting this command.
 
-For the current Bhopal local setup, start FastAPI on port 8001 before the web
+For the current Central Africa local setup, start FastAPI on port 8001 before the web
 server. Next.js proxies browser requests from `http://localhost:3000/api/*` to
 that service, so the NASA FIRMS MAP key stays only in `backend/.env`:
 
@@ -83,7 +83,7 @@ network connection stops. NASA FIRMS remains available, but a local PyroLens
 server cannot be reached while it is off. For continuous operation, deploy
 `docker-compose.yml` to an always-on Linux VM or cloud container host. All
 services use `restart: unless-stopped`; the Celery scheduler then refreshes the
-configured Bhopal NASA FIRMS feed every `FIRMS_REFRESH_SECONDS` seconds.
+configured Central Africa NASA FIRMS feed every `FIRMS_REFRESH_SECONDS` seconds.
 
 Before public deployment, use a production database password, HTTPS reverse
 proxy/domain, external object storage, a production identity provider, and a

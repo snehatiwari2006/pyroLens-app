@@ -22,13 +22,13 @@ services:
       - key: FIRMS_API_KEY
         sync: false
       - key: FIRMS_DEFAULT_BBOX
-        value: 77.30,23.05,77.55,23.35
+        value: 22.0,-15.0,32.0,-8.0
       - key: MONITORING_AREA_NAME
-        value: Bhopal, Madhya Pradesh
+        value: Central Africa fire belt (Zambia–southern DRC)
       - key: MONITORING_LATITUDE
-        value: 23.2599
+        value: -11.5
       - key: MONITORING_LONGITUDE
-        value: 77.4126
+        value: 27.0
       - key: USE_CELERY
         value: false
       - key: JWT_SECRET

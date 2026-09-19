@@ -19,13 +19,13 @@ export default function FireMapPage() {
   return (
     <div>
       <SectionHeader title="Fire & impact intelligence map"
-        desc="Bhopal operational view: live thermal events, persistence, industrial risk and estimated impact zones." />
+        desc="Central Africa operational view: live thermal events, persistence, industrial risk and estimated impact zones." />
       <div className="grid lg:grid-cols-4 gap-5">
         <div className="lg:col-span-3 space-y-4">
           <MapControls layers={layers} onToggle={toggle} showImpact={showImpact} onToggleImpact={() => setShowImpact((v) => !v)} />
           <FireMap incidents={incidents} layers={layers} onSelect={setSelectedId} selectedId={selectedId} showImpact={showImpact} />
           <p className="text-xs text-slateink">
-            Bhopal basemap with live NASA FIRMS detections. An empty map means no active detection has been returned for the selected time window.
+            Zambia–southern DRC basemap with live NASA FIRMS detections. An empty map means no active detection has been returned for the selected time window.
           </p>
         </div>
         <div className="space-y-4">

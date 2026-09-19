@@ -110,7 +110,7 @@ async def list_events(
     _: dict = Depends(require_role("viewer", "analyst", "admin")),
 ) -> list[ThermalEvent]:
     # The original FE-* records are development fixtures. They are never sent
-    # to the Bhopal operational UI, where an empty feed is more truthful.
+    # to the Africa operational UI, where an empty feed is more truthful.
     events = [event for event in repository.list() if not event.id.startswith("FE-") and event.risk_score >= min_risk]
     return [
         event for event in events
@@ -241,9 +241,9 @@ async def infrastructure_layers(_: dict = Depends(require_role("viewer", "analys
 
 @app.get("/api/v1/operational-area", tags=["system"])
 async def operational_area(_: dict = Depends(require_role("viewer", "analyst", "admin"))) -> dict:
-    """Live status of the Bhopal pilot's operational sources, without secrets."""
+    """Live status of the Africa pilot's operational sources, without secrets."""
     probe = ThermalEvent(
-        id="bhopal-operational-probe", name=settings.monitoring_area_name,
+        id="africa-operational-probe", name=settings.monitoring_area_name,
         lat=settings.monitoring_latitude, lng=settings.monitoring_longitude,
         confidence=100, frp_mw=0, brightness_kelvin=0,
     )

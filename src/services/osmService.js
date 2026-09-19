@@ -1,5 +1,5 @@
 // OpenStreetMap / Overpass geographic data is queried by the backend, which
-// applies a bounded live Bhopal incident-area query and reports availability.
+// applies a bounded live Africa incident-area query and reports availability.
 import { INFRASTRUCTURE } from "../data/infrastructure.js";
 import { apiFetch, apiFetchOr, mockRequest } from "./api.js";
 
