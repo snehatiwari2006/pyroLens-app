@@ -111,16 +111,18 @@ class OsmProvider:
         settings = get_settings()
         if not settings.osm_live_enabled:
             return self._unavailable_exposure("Live OSM access is disabled")
-        query = f"""[out:json][timeout:8];(
-          way(around:1500,{event.latitude},{event.longitude})[building];
-          way(around:1500,{event.latitude},{event.longitude})[highway];
-          way(around:1500,{event.latitude},{event.longitude})[landuse=industrial];
-          nwr(around:1500,{event.latitude},{event.longitude})[amenity~\"hospital|fire_station\"];
-        );out tags;"""
+        # A compact probe is more reliable on public Overpass instances than
+        # querying every way in a large radius, particularly for live demos.
+        query = f"""[out:json][timeout:15];(
+          nwr(around:750,{event.latitude},{event.longitude})[building];
+          way(around:750,{event.latitude},{event.longitude})[highway];
+          nwr(around:750,{event.latitude},{event.longitude})[landuse=industrial];
+          nwr(around:750,{event.latitude},{event.longitude})[amenity~\"hospital|fire_station\"];
+        );out tags qt;"""
         last_error = "No public Overpass endpoint responded"
         for url in tuple(dict.fromkeys((settings.osm_overpass_url, *self._public_mirrors))):
             try:
-                async with httpx.AsyncClient(timeout=6) as client:
+                async with httpx.AsyncClient(timeout=15) as client:
                     response = await client.post(url, data={"data": query})
                     response.raise_for_status()
                 elements = response.json().get("elements", [])
