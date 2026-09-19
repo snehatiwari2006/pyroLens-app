@@ -2,7 +2,7 @@
 // This is the layer that would eventually call an AI/ML inference backend.
 import { INCIDENTS } from "../data/incidents.js";
 import { THERMAL_SOURCES } from "../data/thermalSources.js";
-import { apiFetchOr, mockRequest } from "./api.js";
+import { apiFetch, apiFetchOr, mockRequest } from "./api.js";
 
 export function normalizeIncident(event) {
   const existing = INCIDENTS.find((incident) => incident.id === event.id);
