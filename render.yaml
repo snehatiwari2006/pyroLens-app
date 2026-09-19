@@ -45,7 +45,7 @@ services:
     startCommand: npm run start
     envVars:
       - key: API_INTERNAL_ORIGIN
-        value: https://pyrolens-api.onrender.com
+        value: https://pyrolens-api-10z2.onrender.com
 
 databases:
   - name: pyrolens-db
