@@ -3,6 +3,13 @@ import { MapContainer, TileLayer, Circle, useMap } from "react-leaflet";
 import FireMarker from "./FireMarker.jsx";
 import { IMPACT_ZONE_RINGS } from "../data/impactData.js";
 
+const MAX_RENDERED_HOTSPOTS = 600;
+
+function priorityScore(incident) {
+  const frp = Number.parseFloat(incident.frp) || 0;
+  return (Number(incident.riskScore) || 0) * 1000 + (Number(incident.confidence) || 0) * 10 + frp;
+}
+
 function MapViewport({ center }) {
   const map = useMap();
   useEffect(() => {
@@ -21,6 +28,15 @@ function MapViewport({ center }) {
 // Real interactive map (react-leaflet + OpenStreetMap tiles).
 export default function FireMap({ incidents, layers, onSelect, selectedId, showImpact, height = 480 }) {
   const selected = incidents.find((i) => i.id === selectedId);
+  // FIRMS can return thousands of points for this Africa boundary. Rendering
+  // every point with a popup exhausts the browser, so preserve the strongest
+  // observations and always retain the currently selected hotspot.
+  const visibleIncidents = [...incidents]
+    .sort((left, right) => priorityScore(right) - priorityScore(left))
+    .slice(0, MAX_RENDERED_HOTSPOTS);
+  if (selected && !visibleIncidents.some((incident) => incident.id === selected.id)) {
+    visibleIncidents.push(selected);
+  }
   // Keep the empty-state map aligned with the configured Africa pilot area.
   // Once live FIRMS events arrive, selecting an event recenters the map on it.
   const center = selected ? [selected.lat, selected.lng] : [-11.5, 27.0];
@@ -54,12 +70,12 @@ export default function FireMap({ incidents, layers, onSelect, selectedId, showI
           />
         ))}
 
-        {layers.thermal && incidents.filter((i) => i.persistenceScore > 60).map((i) => (
+        {layers.thermal && visibleIncidents.filter((i) => i.persistenceScore > 60).map((i) => (
           <Circle key={"p" + i.id} center={[i.lat, i.lng]} radius={700}
             pathOptions={{ color: "#D97706", fillOpacity: 0, weight: 1.5, dashArray: "4 4" }} />
         ))}
 
-        {layers.thermalEvents && incidents.map((i) => (
+        {layers.thermalEvents && visibleIncidents.map((i) => (
           <FireMarker key={i.id} incident={i} onSelect={onSelect} selected={i.id === selectedId} />
         ))}
       </MapContainer>

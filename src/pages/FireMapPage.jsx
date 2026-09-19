@@ -20,6 +20,9 @@ export default function FireMapPage() {
   const [selectedId, setSelectedId] = useState(null);
   const [showImpact, setShowImpact] = useState(true);
   const selected = incidents.find((i) => i.id === selectedId);
+  const hotspotSummary = incidents.length > 600
+    ? `Showing the 600 highest-priority observations from ${incidents.length.toLocaleString()} live detections.`
+    : `${incidents.length.toLocaleString()} live detections available.`;
 
   const toggle = (k) => setLayers((l) => ({ ...l, [k]: !l[k] }));
 
@@ -32,7 +35,7 @@ export default function FireMapPage() {
           <MapControls layers={layers} onToggle={toggle} showImpact={showImpact} onToggleImpact={() => setShowImpact((v) => !v)} />
           <FireMap incidents={incidents} layers={layers} onSelect={setSelectedId} selectedId={selectedId} showImpact={showImpact} />
           <p className="text-xs text-slateink">
-            Zambia–southern DRC basemap with live NASA FIRMS detections. An empty map means no active detection has been returned for the selected time window.
+            Zambia–southern DRC basemap with live NASA FIRMS detections. {hotspotSummary}
           </p>
         </div>
         <div className="space-y-4">
