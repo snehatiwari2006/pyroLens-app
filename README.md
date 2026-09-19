@@ -98,6 +98,10 @@ repository, then set `FIRMS_API_KEY` only in the `pyrolens-api` environment
 variables. The free Render plan can sleep after idle time and its free Postgres
 offer is temporary, so it is for demos—not continuous monitoring.
 
+`PUBLIC_READ_API=true` is enabled by the Render Blueprint solely for dashboard
+GET endpoints. Ingestion, alert dispatch, uploads, and other write operations
+remain authenticated.
+
 ## API workflow
 
 - `GET /health` verifies the service.

@@ -7,6 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "PyroLens Intelligence API"
     environment: str = "development"
+    # Public deployments can expose dashboard read endpoints without exposing
+    # ingestion, alerts, uploads, or any other analyst/admin operation.
+    public_read_api: bool = False
     model_version: str = "xgboost-synthetic-v1"
     model_path: str = "artifacts/fire_classifier.joblib"
     api_prefix: str = "/api/v1"

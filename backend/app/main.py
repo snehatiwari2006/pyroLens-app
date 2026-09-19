@@ -50,6 +50,8 @@ def require_role(*allowed_roles: str):
     async def dependency(credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> dict:
         if settings.environment == "development" and credentials is None:
             return {"sub": "demo-analyst", "role": "analyst"}
+        if settings.public_read_api and credentials is None and "viewer" in allowed_roles:
+            return {"sub": "public-dashboard", "role": "viewer"}
         if credentials is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
         if jwt is None:
