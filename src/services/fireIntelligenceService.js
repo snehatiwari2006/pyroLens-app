@@ -58,5 +58,7 @@ export async function getThermalPersistence() {
 }
 
 export async function getIncidents() {
-  return apiFetch("/events").then((events) => events.map(normalizeIncident));
+  // Keep the initial browser request small enough for an Africa-scale FIRMS
+  // feed. The API returns the highest-priority observations first.
+  return apiFetch("/events?limit=600").then((events) => events.map(normalizeIncident));
 }

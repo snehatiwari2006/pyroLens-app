@@ -122,16 +122,24 @@ async def list_events(
     min_risk: float = Query(0, ge=0, le=100),
     event_type: str | None = None,
     status_filter: str | None = Query(None, alias="status"),
+    limit: int = Query(600, ge=1, le=1000),
     _: dict = Depends(require_role("viewer", "analyst", "admin")),
 ) -> list[ThermalEvent]:
     # The original FE-* records are development fixtures. They are never sent
     # to the Africa operational UI, where an empty feed is more truthful.
     events = [event for event in repository.list() if not event.id.startswith("FE-") and event.risk_score >= min_risk]
-    return [
+    filtered_events = [
         event for event in events
         if (not event_type or event.event_type.lower() == event_type.lower())
         and (not status_filter or event.status.lower() == status_filter.lower())
     ]
+    # A continent-scale FIRMS query can produce thousands of full records.
+    # Keep dashboard reads bounded and send the strongest observations first.
+    return sorted(
+        filtered_events,
+        key=lambda event: (event.risk_score, event.confidence, event.frp_mw),
+        reverse=True,
+    )[:limit]
 
 
 @app.get("/api/v1/events/{event_id}", response_model=ThermalEvent, tags=["events"])
