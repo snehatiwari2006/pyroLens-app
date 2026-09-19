@@ -21,7 +21,9 @@ function MapViewport({ center }) {
 // Real interactive map (react-leaflet + OpenStreetMap tiles).
 export default function FireMap({ incidents, layers, onSelect, selectedId, showImpact, height = 480 }) {
   const selected = incidents.find((i) => i.id === selectedId);
-  const center = selected ? [selected.lat, selected.lng] : [23.2599, 77.4126];
+  // Keep the empty-state map aligned with the configured Africa pilot area.
+  // Once live FIRMS events arrive, selecting an event recenters the map on it.
+  const center = selected ? [selected.lat, selected.lng] : [-11.5, 27.0];
   // GIBS imagery is generally published with a short delay; yesterday avoids
   // requesting a not-yet-published daily mosaic at the UTC boundary.
   const imageryDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);

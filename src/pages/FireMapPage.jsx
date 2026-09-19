@@ -1,11 +1,18 @@
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { useApp } from "../context/AppContext.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
-import FireMap from "../components/FireMap.jsx";
 import MapControls from "../components/MapControls.jsx";
 import MapLegend from "../components/MapLegend.jsx";
 import Card from "../components/Card.jsx";
 import { SeverityPill } from "../components/StatusBadge.jsx";
+
+// Leaflet requires browser globals. Loading it only for this route keeps the
+// dashboard startup safe in Next.js while still rendering the interactive map.
+const FireMap = dynamic(() => import("../components/FireMap.jsx"), {
+  ssr: false,
+  loading: () => <div className="rounded-lg border border-line bg-white p-6 text-sm text-slateink">Loading Africa fire map…</div>,
+});
 
 export default function FireMapPage() {
   const { incidents, openIncident } = useApp();
