@@ -15,7 +15,7 @@ const FireMap = dynamic(() => import("../components/FireMap.jsx"), {
 });
 
 export default function FireMapPage() {
-  const { incidents, openIncident } = useApp();
+  const { incidents, openIncident, refreshError } = useApp();
   const [layers, setLayers] = useState({ thermalEvents: true, thermal: true, infrastructure: true, industrial: true, satellite: false });
   const [selectedId, setSelectedId] = useState(null);
   const [showImpact, setShowImpact] = useState(true);
@@ -34,6 +34,11 @@ export default function FireMapPage() {
         <div className="lg:col-span-3 space-y-4">
           <MapControls layers={layers} onToggle={toggle} showImpact={showImpact} onToggleImpact={() => setShowImpact((v) => !v)} />
           <FireMap incidents={incidents} layers={layers} onSelect={setSelectedId} selectedId={selectedId} showImpact={showImpact} />
+          {refreshError && (
+            <p className="rounded-md border border-critical/30 bg-criticalBg px-3 py-2 text-xs text-critical">
+              Live hotspot data could not be loaded: {refreshError}
+            </p>
+          )}
           <p className="text-xs text-slateink">
             Zambia–southern DRC basemap with live NASA FIRMS detections. {hotspotSummary}
           </p>
