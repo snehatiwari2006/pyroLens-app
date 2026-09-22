@@ -12,13 +12,15 @@ except ImportError:  # Allows the demo API to start before optional auth extras 
     jwt = None
 from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
+from .api.deps import require_role
+from .api.v1.router import api_router
 from .config import get_settings
 from .processing import assess_impact, assess_risk, classify
-from .providers import FirmsNotConfiguredError, firms_provider, osm_provider, weather_provider
+from .providers import FirmsNotConfiguredError, osm_provider, weather_provider
+from .services.firms_ingest import fetch_firms_hotspots, hotspots_to_events
 from .repository import repository
 from .storage import object_storage
 from .validation import validate_events
@@ -38,7 +40,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-security = HTTPBearer(auto_error=False)
+app.include_router(api_router, prefix=settings.api_prefix)
+app.include_router(api_router)
 _jobs: dict[str, JobResponse] = {}
 
 
@@ -47,42 +50,11 @@ class TokenRequest(BaseModel):
     role: str = "analyst"
 
 
-def require_role(*allowed_roles: str):
-    async def dependency(credentials: HTTPAuthorizationCredentials | None = Depends(security)) -> dict:
-        if settings.environment == "development" and credentials is None:
-            return {"sub": "demo-analyst", "role": "analyst"}
-        if settings.public_read_api and credentials is None and "viewer" in allowed_roles:
-            return {"sub": "public-dashboard", "role": "viewer"}
-        if credentials is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
-        if jwt is None:
-            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="PyJWT is required for authenticated requests")
-        try:
-            if settings.oidc_jwks_url:
-                signing_key = jwt.PyJWKClient(settings.oidc_jwks_url).get_signing_key_from_jwt(credentials.credentials)
-                claims = jwt.decode(
-                    credentials.credentials,
-                    signing_key.key,
-                    algorithms=["RS256"],
-                    audience=settings.oidc_audience,
-                    issuer=settings.oidc_issuer,
-                    options={"verify_aud": bool(settings.oidc_audience), "verify_iss": bool(settings.oidc_issuer)},
-                )
-            else:
-                claims = jwt.decode(credentials.credentials, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
-        except jwt.PyJWTError as exc:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
-        roles = claims.get("roles", [claims.get("role")])
-        if not any(role in allowed_roles for role in roles):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient role")
-        return claims
-    return dependency
-
-
 async def _refresh_firms_after_startup() -> None:
     """Populate a lightweight deployment without exposing a public write endpoint."""
     try:
-        events = await firms_provider.fetch({})
+        spots = await fetch_firms_hotspots()
+        events = hotspots_to_events(spots)
         accepted = repository.save_many(events)
         repository.record_ingestion("firms", len(events), accepted)
     except Exception as exc:
@@ -173,7 +145,13 @@ async def ingest(request: IngestionRequest, _: dict = Depends(require_role("anal
             ingest_firms.apply_async(task_id=job_id)
             return IngestionResponse(job_id=job_id, source=request.source, accepted_records=0, rejected_records=0, status="queued")
         try:
-            events = await firms_provider.fetch(request.model_dump())
+            payload = request.model_dump()
+            spots = await fetch_firms_hotspots(
+                bbox=payload.get("bbox"),
+                days=payload.get("days"),
+                start_date=payload.get("start_date"),
+            )
+            events = hotspots_to_events(spots)
             accepted = repository.save_many(events)
             repository.record_ingestion(request.source, len(events), accepted)
             _jobs[job_id] = job.model_copy(update={"status": "completed"})

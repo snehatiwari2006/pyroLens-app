@@ -1,6 +1,7 @@
 from .schemas import ClassificationResponse, ImpactResponse, RiskResponse, ThermalEvent
 from .providers import osm_provider, weather_provider
 from .ml import predict
+from .ml.spread_predictor import predict_spread_geojson
 from .geospatial import estimate_spread
 from .config import get_settings
 
@@ -23,6 +24,18 @@ async def assess_impact(event: ThermalEvent) -> ImpactResponse:
     exposed["weather"] = weather
     settings = get_settings()
     spread = estimate_spread(event, weather, settings.terrain_raster_path, settings.landcover_raster_path)
+    if not spread.get("impact_zone_geojson"):
+        predicted = predict_spread_geojson(
+            lat=event.latitude,
+            lon=event.longitude,
+            wind_speed_kmh=float(weather.get("wind_speed_kmh") or 0),
+            wind_direction_degrees=float(weather.get("wind_degrees") or 45),
+            brightness_temp=event.brightness_kelvin,
+            frp_mw=event.frp_mw,
+        )
+        spread["impact_zone_geojson"] = predicted.get("impact_zone_geojson")
+        spread["impact_zone_km2"] = predicted.get("impact_zone_km2", spread.get("impact_zone_km2"))
+        spread["model"] = predicted.get("model", spread.get("model"))
     assumptions = [
         "Impact is an estimate, not a confirmed damage assessment",
         "Wind conditions are sampled at the event coordinates",

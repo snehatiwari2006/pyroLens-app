@@ -4,8 +4,9 @@ import asyncio
 from celery import Celery
 
 from .config import get_settings
-from .providers import FirmsNotConfiguredError, firms_provider
+from .providers import FirmsNotConfiguredError
 from .repository import repository
+from .services.firms_ingest import fetch_firms_hotspots, hotspots_to_events
 
 settings = get_settings()
 celery_app = Celery("pyrolens", broker=settings.redis_url, backend=settings.redis_url)
@@ -22,7 +23,8 @@ celery_app.conf.update(
 def ingest_firms() -> dict:
     """Fetch FIRMS events through the provider adapter and persist new records."""
     try:
-        events = asyncio.run(firms_provider.fetch({"source": "firms"}))
+        spots = asyncio.run(fetch_firms_hotspots())
+        events = hotspots_to_events(spots)
         # Repository-level de-duplication prevents repeat scheduled runs creating
         # duplicate incidents when a provider overlaps its observation window.
         written = repository.save_many(events)
