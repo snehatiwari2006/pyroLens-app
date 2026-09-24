@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Siren } from "lucide-react";
+import { Siren, Eye } from "lucide-react";
 import { useApp } from "../context/AppContext.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
 import Card from "../components/Card.jsx";
@@ -19,38 +19,92 @@ export default function AlertsWarnings() {
   });
 
   return (
-    <div>
-      <SectionHeader title="Alerts & warnings" desc="Prioritized fire events requiring authority attention, with recommended actions." />
-      <div className="flex flex-wrap gap-2 mb-5">
-        {FILTERS.map((f) => (
-          <button key={f} onClick={() => setFilter(f)} className="text-xs font-medium rounded-md px-3 py-1.5 border"
-            style={{ borderColor: filter === f ? "#C2410C" : "#E8E4DC", color: filter === f ? "#9A3412" : "#5E6573", background: filter === f ? "#FFF7ED" : "#fff" }}>
-            {f}
-          </button>
-        ))}
+    <div className="space-y-8 animate-fadeIn">
+      <SectionHeader
+        eyebrow="Emergency Ledger"
+        title="Alerts & Directives"
+        desc="Prioritized queue of active thermal anomalies requiring authority attention, with recommended protocols and one-click warning issuance."
+      />
+
+      {/* Filter Badges */}
+      <div className="flex flex-wrap gap-2">
+        {FILTERS.map((f) => {
+          const active = filter === f;
+          return (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`text-xs font-bold rounded-xl px-3.5 py-2 border transition-all ${
+                active
+                  ? "border-orange bg-orange-50 text-orange shadow-xs ring-1 ring-orange/30 font-extrabold"
+                  : "border-line bg-white text-slateink hover:bg-[#FAF7F2] hover:text-ink"
+              }`}
+            >
+              {f}
+            </button>
+          );
+        })}
       </div>
-      <div className="space-y-3">
-        {list.map((i) => (
-          <Card key={i.id}>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-              <div className="flex items-start gap-3">
-                <SeverityPill level={i.risk} />
-                <div>
-                  <div className="text-sm font-medium text-ink">{i.id} · {i.name}</div>
-                  <div className="text-xs text-slateink">{i.location} · Detected {i.detectionTime}</div>
-                  <div className="text-xs mt-1 text-slateink">Recommended: {i.status === "Resolved" ? "Archive record" : "Monitor and verify before further action"}</div>
+
+      {/* Alerts List */}
+      <div className="space-y-3.5">
+        {list.map((i) => {
+          const accentType =
+            i.risk === "CRITICAL"
+              ? "critical"
+              : i.risk === "HIGH"
+              ? "orange"
+              : i.risk === "MEDIUM"
+              ? "amber"
+              : "safe";
+
+          return (
+            <Card key={i.id} accent={accentType} hoverLift={true}>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                <div className="flex items-start gap-3.5">
+                  <SeverityPill level={i.risk} />
+                  <div>
+                    <div className="text-sm font-bold text-ink tracking-tight">
+                      <span className="font-mono text-xs text-orange mr-1.5">{i.id}</span>
+                      <span>· {i.name}</span>
+                    </div>
+                    <div className="text-xs text-slateink mt-0.5">
+                      {i.location} · Detected <span className="font-medium text-ink">{i.detectionTime}</span>
+                    </div>
+                    <div className="text-xs mt-1.5 text-slateink/90 font-medium">
+                      Recommended:{" "}
+                      <span className="text-ink">
+                        {i.status === "Resolved"
+                          ? "Archive incident record"
+                          : "Verify with UAV/ground scout before ordering evacuation"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                  <StatusBadge status={i.status} />
+                  <button
+                    onClick={() => openIncident(i)}
+                    className="btn-secondary !py-2 !px-3.5 text-xs font-semibold flex items-center gap-1.5"
+                  >
+                    <Eye size={14} />
+                    <span>Inspect</span>
+                  </button>
+                  {i.status !== "Resolved" && i.status !== "Warning Issued" && (
+                    <button
+                      onClick={() => issueWarning(i)}
+                      className="btn-primary !py-2 !px-3.5 text-xs font-bold flex items-center gap-1.5 shadow-sm shadow-orange/30"
+                    >
+                      <Siren size={14} />
+                      <span>Issue Warning</span>
+                    </button>
+                  )}
                 </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <StatusBadge status={i.status} />
-                <button onClick={() => openIncident(i)} className="btn-secondary !py-1.5 !px-3 text-xs">View</button>
-                {i.status !== "Resolved" && i.status !== "Warning Issued" && (
-                  <button onClick={() => issueWarning(i)} className="btn-primary !py-1.5 !px-3 text-xs"><Siren size={13} />Warn</button>
-                )}
-              </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,105 +1,172 @@
 import React from "react";
 import {
-  CloudDownload,
-  Database,
-  BrainCircuit,
-  Flame,
-  ShieldCheck,
-  Server,
-  Monitor,
+  Satellite,
   Workflow,
+  BrainCircuit,
+  ShieldAlert,
+  ShieldCheck,
+  ChevronRight,
+  Database,
+  ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
 
-const layers = [
+const WORKFLOW_STEPS = [
   {
-    number: "01",
-    label: "Data sources",
-    icon: CloudDownload,
-    tone: "#2563EB",
-    items: ["NASA FIRMS thermal hotspots", "OpenStreetMap context", "Weather and terrain data"],
+    step: "01",
+    label: "Data Sources",
+    sub: "Detection Feeds",
+    icon: Satellite,
+    color: "#2563EB",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+    text: "text-blue-700",
+    badge: "bg-blue-100 text-blue-800",
+    summary: "NASA FIRMS (VIIRS 375m & MODIS 1km) thermal anomalies paired with OpenStreetMap infrastructure and weather feeds.",
+    points: ["NASA FIRMS VIIRS & MODIS", "OpenStreetMap spatial assets", "Open-Meteo wind & humidity"],
   },
   {
-    number: "02",
-    label: "Ingestion & validation",
+    step: "02",
+    label: "Ingestion Pipeline",
+    sub: "Normalization",
     icon: Workflow,
-    tone: "#0891B2",
-    items: ["Scheduled feed ingestion", "Coordinate validation", "Normalized GeoJSON"],
+    color: "#0D9488",
+    bg: "bg-teal-50",
+    border: "border-teal-200",
+    text: "text-teal-700",
+    badge: "bg-teal-100 text-teal-800",
+    summary: "Automated ingestion pipeline validates coordinates, groups nearby thermal clusters, and indexes them into PostGIS geometries.",
+    points: ["Sub-minute feed ingestion", "PostGIS spatial validation", "Spatial clustering & deduplication"],
   },
   {
-    number: "03",
-    label: "Data storage",
-    icon: Database,
-    tone: "#059669",
-    items: ["PostGIS spatial layers", "Object storage for imagery", "Historical observations"],
-  },
-  {
-    number: "04",
-    label: "Processing & AI",
+    step: "03",
+    label: "AI Processing",
+    sub: "Classification",
     icon: BrainCircuit,
-    tone: "#7C3AED",
-    items: ["Feature engineering", "Fire spread prediction", "Explainable risk scoring"],
+    color: "#7C3AED",
+    bg: "bg-purple-50",
+    border: "border-purple-200",
+    text: "text-purple-700",
+    badge: "bg-purple-100 text-purple-800",
+    summary: "AI models analyze Fire Radiative Power (FRP), temporal persistence, and land cover to eliminate false alarms and detect industrial hazards.",
+    points: ["Industrial vs. biomass detection", "False positive suppression", "Temporal recurrence tracking"],
   },
   {
-    number: "05",
-    label: "Decision services",
+    step: "04",
+    label: "Risk Scoring",
+    sub: "Exposure Analysis",
+    icon: ShieldAlert,
+    color: "#EA580C",
+    bg: "bg-orange-50",
+    border: "border-orange-200",
+    text: "text-orange-700",
+    badge: "bg-orange-100 text-orange-800",
+    summary: "Dynamic calculation of threat index (0–100) based on proximity to fuel depots, chemical plants, pipelines, and civil populations.",
+    points: ["500m, 2km & 5km impact rings", "Infrastructure proximity matrix", "Explainable 0–100 risk score"],
+  },
+  {
+    step: "05",
+    label: "Decision Support",
+    sub: "Action & Response",
     icon: ShieldCheck,
-    tone: "#D97706",
-    items: ["Impact assessment", "Exposure analysis", "Recommended actions"],
-  },
-  {
-    number: "06",
-    label: "API & workers",
-    icon: Server,
-    tone: "#DC2626",
-    items: ["REST and map services", "Background task queues", "Secure access control"],
-  },
-  {
-    number: "07",
-    label: "PyroLens workspace",
-    icon: Monitor,
-    tone: "#C2410C",
-    items: ["Map and live alerts", "Analytics and reports", "Response coordination"],
+    color: "#059669",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+    text: "text-emerald-700",
+    badge: "bg-emerald-100 text-emerald-800",
+    summary: "Actionable directives for emergency authorities: evacuation radius recommendations, PDF incident reports, and one-click warning dispatch.",
+    points: ["Evacuation perimeter guidance", "One-click warning authorization", "Auditable incident briefings"],
   },
 ];
 
 export default function ArchitectureFlow() {
   return (
-    <section className="mt-12 border-y border-line py-8">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-6">
-        <div>
-          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#C2410C]">Platform architecture</div>
-          <h2 className="mt-1 text-2xl font-semibold text-ink">One signal, one operational picture</h2>
-        </div>
-        <p className="max-w-md text-sm leading-relaxed text-slateink">
-          Every observation moves through validation, spatial intelligence and explainable decision support before it reaches the response team.
+    <section className="flow-atlas relative overflow-hidden mt-14 mb-8 px-6 py-10 sm:px-8 sm:py-12 rounded-[24px] border border-line bg-[#FDFBF7]">
+      
+      {/* Section Header */}
+      <div className="max-w-3xl mb-10">
+        <h2 className="text-3xl sm:text-4xl font-bold text-ink tracking-[-0.04em]">
+          How PyroLens Works: From Satellite Signal to Response
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-slateink leading-relaxed">
+          An automated 5-stage pipeline that transforms raw spaceborne thermal pixels into verified, explainable risk assessments and emergency response directives.
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
-        {layers.map((layer, index) => {
-          const Icon = layer.icon;
-          return (
-            <div key={layer.number} className="relative min-w-0 rounded-lg border border-line bg-white p-4 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-[11px] font-semibold tracking-[0.14em]" style={{ color: layer.tone }}>{layer.number}</span>
-                <Icon size={19} style={{ color: layer.tone }} />
+      {/* 5-Step Workflow Pipeline */}
+      <div className="relative pt-4">
+        <div className="workflow-track hidden lg:block absolute left-[8%] right-[8%] top-[3.55rem] h-[2px]" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-2">
+          {WORKFLOW_STEPS.map((s, idx) => {
+            const Icon = s.icon;
+            return (
+              <div
+                key={s.step}
+                className="relative flex flex-col justify-between rounded-xl border border-transparent bg-white/45 p-4 hover:bg-white hover:border-[#1D78D6]/20 transition-colors duration-200"
+              >
+                {/* Thin Top Accent */}
+                <div>
+                  {/* Step Header */}
+                  <div className="flex items-center justify-between mb-3.5">
+                    <span
+                      className="text-[11px] font-bold font-mono text-slateink"
+                    >
+                      STEP {s.step}
+                    </span>
+                    <div
+                      className={`relative z-10 h-10 w-10 rounded-full flex items-center justify-center border-4 border-[#FDFBF7] ${s.bg} ${s.border} ${s.text}`}
+                    >
+                      <Icon size={18} strokeWidth={2.2} />
+                    </div>
+                  </div>
+
+                  {/* Stage Title */}
+                  <h3 className="text-base font-bold text-ink tracking-tight">{s.label}</h3>
+                  <div className="text-[11px] font-semibold text-slateink mb-2">
+                    {s.sub}
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-xs text-slateink leading-relaxed mb-4">{s.summary}</p>
+                </div>
+
+                {/* Key Bullet Points */}
+                <div className="pt-3 border-t border-line/60 space-y-1.5">
+                  {s.points.map((pt) => (
+                    <div key={pt} className="flex items-start gap-1.5 text-[11px] text-ink font-medium">
+                      <CheckCircle2 size={12} className="shrink-0 mt-0.5" style={{ color: s.color }} />
+                      <span className="leading-tight">{pt}</span>
+                    </div>
+                  ))}
+                </div>
+
               </div>
-              <div className="text-sm font-semibold leading-snug text-ink">{layer.label}</div>
-              <ul className="mt-3 space-y-2 text-[11px] leading-snug text-slateink">
-                {layer.items.map((item) => <li key={item}>{item}</li>)}
-              </ul>
-              {index < layers.length - 1 && <span className="absolute -right-2 top-1/2 hidden h-px w-2 bg-line xl:block" />}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slateink">
-        <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#2563EB]" /> Data flow</span>
-        <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#C2410C]" /> Decision flow</span>
-        <span className="inline-flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[#059669]" /> Spatial context</span>
-        <span className="inline-flex items-center gap-2"><Flame size={13} className="text-[#C2410C]" /> Live fire intelligence</span>
+      {/* Operational Bottom Summary Banner */}
+      <div className="mt-8 pt-6 border-t border-line/70 flex flex-wrap items-center justify-between gap-4 text-xs text-slateink">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 font-medium text-ink">
+            <span className="h-2 w-2 rounded-full bg-blue-600" />
+            <span>Continuous Ingestion</span>
+          </div>
+          <div className="flex items-center gap-2 font-medium text-ink">
+            <span className="h-2 w-2 rounded-full bg-purple-600" />
+            <span>AI Risk Scoring</span>
+          </div>
+          <div className="flex items-center gap-2 font-medium text-ink">
+            <span className="h-2 w-2 rounded-full bg-emerald-600" />
+            <span>Authority Dispatch</span>
+          </div>
+        </div>
+        <div className="font-medium text-slateink">
+          Operational Latency: <strong className="text-ink">&lt; 60 seconds</strong> from satellite downlink
+        </div>
       </div>
+
     </section>
   );
 }
