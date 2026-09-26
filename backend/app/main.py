@@ -18,7 +18,7 @@ from pydantic import BaseModel
 
 from .config import get_settings
 from .processing import assess_impact, assess_risk, classify
-from .providers import FirmsNotConfiguredError, firms_provider, osm_provider, weather_provider
+from .providers import FirmsNotConfiguredError, firms_provider, osm_provider, weather_provider, startup_tasks, geocoding_provider
 from .repository import repository
 from .storage import object_storage
 from .validation import validate_events
@@ -82,26 +82,67 @@ def require_role(*allowed_roles: str):
 async def _refresh_firms_after_startup() -> None:
     """Populate a lightweight deployment without exposing a public write endpoint."""
     try:
-        events = await firms_provider.fetch({})
-        accepted = repository.save_many(events)
-        repository.record_ingestion("firms", len(events), accepted)
+        # Fetch last 7 days of data on startup
+        accepted = await startup_tasks.fetch_recent_firms(days=7)
+        print(f"Startup FIRMS fetch completed: {accepted} records accepted")
     except Exception as exc:
         # A provider outage must not prevent the API from starting. The status
         # endpoint reports this failed run without exposing provider details.
         repository.record_ingestion("firms", 0, 0, status="failed", error=type(exc).__name__)
+        print(f"Startup FIRMS fetch failed: {exc}")
 
 
 @app.on_event("startup")
 async def startup() -> None:
-    # Render's small demo deployment has no worker process. Fetch once after
-    # startup so the public map has current observations to display.
-    if settings.auto_refresh_firms_on_start and settings.firms_api_key and not settings.use_celery:
+    # Fetch last 7 days of FIRMS data on startup for the fire intelligence map
+    import logging
+    logger = logging.getLogger(__name__)
+    if settings.firms_api_key:
+        logger.info("Starting background FIRMS fetch for last 7 days...")
+        print("Starting background FIRMS fetch for last 7 days...", flush=True)
         asyncio.create_task(_refresh_firms_after_startup())
+    else:
+        print("FIRMS_API_KEY not configured, skipping startup fetch", flush=True)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 async def health() -> HealthResponse:
     return HealthResponse(status="ok", environment=settings.environment, model_version=settings.model_version)
+
+
+@app.get("/health", response_model=HealthResponse, tags=["system"])
+async def health() -> HealthResponse:
+    return HealthResponse(status="ok", environment=settings.environment, model_version=settings.model_version)
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """Serve a simple SVG favicon."""
+    from fastapi.responses import Response
+    svg = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="45" fill="#dc2626"/>
+  <path d="M50 15 L50 85 M35 50 L65 50" stroke="white" stroke-width="8" stroke-linecap="round"/>
+</svg>'''
+    return Response(content=svg, media_type="image/svg+xml")
+
+
+@app.get("/v1/models", tags=["system"])
+async def list_models() -> dict:
+    """List available ML models."""
+    return {
+        "models": [
+            {
+                "id": "xgboost-synthetic-v1",
+                "name": "XGBoost Synthetic v1",
+                "version": "1.0",
+                "type": "classification",
+                "description": "Synthetic XGBoost model for fire classification",
+                "status": "active",
+                "created_at": "2024-01-01T00:00:00Z",
+            }
+        ],
+        "default": "xgboost-synthetic-v1",
+    }
 
 
 @app.post("/api/v1/auth/token", tags=["auth"])
@@ -135,11 +176,22 @@ async def list_events(
     ]
     # A continent-scale FIRMS query can produce thousands of full records.
     # Keep dashboard reads bounded and send the strongest observations first.
-    return sorted(
+    sorted_events = sorted(
         filtered_events,
         key=lambda event: (event.risk_score, event.confidence, event.frp_mw),
         reverse=True,
     )[:limit]
+    
+    # Enrich events with geocoding if they have default "NASA FIRMS coordinates" location
+    enriched_events = []
+    for event in sorted_events:
+        if event.location and event.location.startswith("NASA FIRMS coordinates:"):
+            address = await geocoding_provider.reverse_geocode(event.latitude, event.longitude)
+            enriched_events.append(event.model_copy(update={"location": address}))
+        else:
+            enriched_events.append(event)
+    
+    return enriched_events
 
 
 @app.get("/api/v1/events/{event_id}", response_model=ThermalEvent, tags=["events"])

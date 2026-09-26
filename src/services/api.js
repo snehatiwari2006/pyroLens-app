@@ -3,9 +3,8 @@
 // its network calls through this file so the rest of the app never talks
 // to fetch()/axios directly.
 
-// Next.js proxies /api to FastAPI locally, while production can supply a
-// public API origin through NEXT_PUBLIC_API_BASE_URL.
-export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/v1";
+// Vite exposes env vars via import.meta.env (prefix with VITE_)
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1";
 
 const MOCK_LATENCY_MS = 300;
 

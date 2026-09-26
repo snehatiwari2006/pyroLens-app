@@ -1,0 +1,52 @@
+# docker-compose.override.yml
+# Copy this file to docker-compose.override.yml and customize for local development
+# This file is automatically loaded by docker-compose and should NOT be committed
+
+services:
+  # Override API for local development with hot reload
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/scripts:/app/scripts
+    environment:
+      # Use local SQLite for quick development (no Postgres needed)
+      DATABASE_URL: sqlite:///./pyrolens.db
+      REDIS_URL: redis://redis:6379/0
+      USE_CELERY: "false"
+      AUTO_REFRESH_FIRMS_ON_START: "true"
+      LOG_LEVEL: DEBUG
+
+  # Override web for local development with Vite dev server
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api/v1
+    volumes:
+      - .:/web
+      - /web/node_modules
+
+  # Disable worker/scheduler for simple local dev
+  worker:
+    deploy:
+      replicas: 0
+
+  scheduler:
+    deploy:
+      replicas: 0
+
+  # Expose Postgres port for external tools (pgAdmin, DBeaver, etc.)
+  postgres:
+    ports:
+      - "5433:5432"  # Use 5433 to avoid conflict with local Postgres
+
+  # Expose Redis port
+  redis:
+    ports:
+      - "6380:6379"  # Use 6380 to avoid conflict with local Redis

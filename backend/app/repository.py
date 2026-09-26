@@ -1,3 +1,4 @@
+from __future__ import annotations
 from datetime import datetime, timezone
 from math import asin, cos, radians, sin, sqrt
 
@@ -106,7 +107,7 @@ class EventRepository:
 
     def record_ingestion(self, source: str, seen: int, written: int, status: str = "completed", error: str | None = None) -> int:
         with SessionLocal() as db:
-            run = IngestionRun(source=source, status=status, records_seen=seen, records_written=written, error=error, finished_at=datetime.utcnow())
+            run = IngestionRun(source=source, status=status, records_seen=seen, records_accepted=written, completed_at=datetime.utcnow())
             db.add(run)
             db.commit()
             db.refresh(run)
@@ -118,7 +119,7 @@ class EventRepository:
             run = db.scalar(
                 select(IngestionRun)
                 .where(IngestionRun.source == source)
-                .order_by(IngestionRun.finished_at.desc(), IngestionRun.id.desc())
+                .order_by(IngestionRun.completed_at.desc(), IngestionRun.id.desc())
                 .limit(1)
             )
             if run is None:
@@ -126,8 +127,8 @@ class EventRepository:
             return {
                 "status": run.status,
                 "records_seen": run.records_seen,
-                "records_written": run.records_written,
-                "finished_at": run.finished_at,
+                "records_written": run.records_accepted,
+                "finished_at": run.completed_at,
                 "error": run.error,
             }
 

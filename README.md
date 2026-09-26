@@ -118,22 +118,113 @@ remain authenticated.
 ## Project structure
 
 ```
-src/
-  data/          Development-only datasets (incidents, industries, infrastructure, alerts,
-                  thermal sources, analytics, response teams, monitoring zones)
-  services/      API-first service wrappers for FIRMS, OSM, weather,
-                  classification, impact, and risk.
-  context/       AppContext — shared incident state, warning workflow,
-                  incident details drawer.
-  components/    Reusable UI: Header/nav, map (React Leaflet), cards,
-                  badges, risk dial, exposure chips, drawer, warning modal.
-  pages/         One file per route (Home, Dashboard, Fire Intelligence Map,
-                  AI Classification, Thermal Persistence, Impact Analysis,
-                  Infrastructure Exposure, Decision Support, Fire Analytics,
-                  Hotspot Analysis, Satellite Data Centre, OSM Intelligence,
-                  Area Monitoring, Alerts & Warnings, Incidents, Emergency
-                  Response, Reports, Demo Mode, Settings).
+pyroLens-app/
+├── backend/
+│   ├── app/              # FastAPI application
+│   │   ├── api/          # API routes (v1 endpoints)
+│   │   ├── ml/           # ML models (classifier, spread predictor, explainability)
+│   │   ├── services/     # Provider adapters (FIRMS, OSM, weather)
+│   │   ├── main.py       # FastAPI app entry point
+│   │   ├── config.py     # Pydantic settings
+│   │   ├── database.py   # SQLAlchemy models & session
+│   │   ├── repository.py # Data access layer
+│   │   ├── processing.py # Classification, risk, impact pipelines
+│   │   ├── workers.py    # Celery tasks
+│   │   ├── alerts.py     # Alert dispatch
+│   │   └── storage.py    # MinIO/S3 object storage
+│   ├── scripts/          # Training & utility scripts
+│   ├── tests/            # Pytest test suite
+│   ├── initdb/           # Database initialization SQL
+│   ├── artifacts/        # Generated model artifacts
+│   ├── requirements.txt              # Core API dependencies
+│   ├── requirements-analytics.txt    # ML/GIS dependencies
+│   ├── .env.example                # Environment template (COPY THIS)
+│   ├── .env.production.example     # Production template
+│   ├── Dockerfile                  # Production backend image
+│   ├── Dockerfile.dev              # Development backend image
+│   └── README.md
+├── src/                      # Frontend (React + Vite)
+│   ├── components/           # Reusable UI components
+│   ├── pages/                # Route pages
+│   ├── services/             # API service wrappers
+│   ├── context/              # React context providers
+│   └── main.jsx              # App entry point
+├── dist/                     # Production build output
+├── nginx.conf                # Nginx config for production frontend
+├── Dockerfile                # Legacy frontend build (deprecated)
+├── Dockerfile.web            # Production frontend (nginx) image
+├── Dockerfile.dev            # Development frontend image
+├── docker-compose.yml        # Full stack orchestration
+├── docker-compose.override.yml.example  # Local dev overrides
+├── Makefile                  # Common development commands
+├── package.json              # Frontend dependencies
+├── vite.config.js            # Vite configuration
+├── tailwind.config.js        # Tailwind CSS configuration
+├── .github/
+│   ├── workflows/ci-cd.yml   # GitHub Actions CI/CD
+│   └── dependabot.yml        # Automated dependency updates
+├── .pre-commit-config.yaml   # Pre-commit hooks
+├── .dockerignore             # Docker build context optimization
+├── .gitignore                # Git ignore rules
+└── README.md
 ```
+
+## Development Workflow
+
+### Quick Start (Docker)
+```bash
+# 1. Copy environment template
+cp backend/.env.example backend/.env
+
+# 2. Start full stack
+docker compose up --build
+
+# 3. Access services
+# Dashboard:     http://localhost:8080
+# API Docs:      http://localhost:8000/docs
+# MinIO Console: http://localhost:4566 (minio/minio123)
+```
+
+### Local Development (Hot Reload)
+```bash
+# Terminal 1: Backend with auto-reload
+cd backend && python -m venv .venv && .venv\Scripts\Activate.ps1
+pip install -r requirements.txt -r requirements-analytics.txt
+python -m uvicorn app.main:app --reload --port 8000
+
+# Terminal 2: Frontend with Vite HMR
+npm install
+npm run dev
+
+# Dashboard: http://localhost:5173 (proxies /api to localhost:8000)
+```
+
+### Using Makefile
+```bash
+make install        # Install all dependencies
+make dev            # Start both dev servers
+make test           # Run all tests
+make lint           # Run linters
+make docker-up      # Start Docker stack
+make docker-down    # Stop Docker stack
+make clean          # Clean build artifacts
+```
+
+## CI/CD Pipeline
+
+- **GitHub Actions** (`.github/workflows/ci-cd.yml`): Lint → Test → Build → Deploy
+- **Dependabot** (`.github/dependabot.yml`): Weekly dependency updates
+- **Pre-commit** (`.pre-commit-config.yaml`): Code quality gates
+
+## Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `backend/.env.example` | **Required** - Copy to `.env` for Docker/local dev |
+| `backend/.env.production.example` | Production deployment template |
+| `docker-compose.override.yml.example` | Local dev overrides (copy to `docker-compose.override.yml`) |
+| `nginx.conf` | Production frontend reverse proxy config |
+| `render.yaml` | Render.com Blueprint deployment |
 
 ## Notes for judges / future integration
 

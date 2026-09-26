@@ -7,17 +7,15 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "set NEXT_DIST_DIR=.next-dev-africa&& node ./node_modules/next/dist/bin/next dev",
-    "dev:clean": "set NEXT_DIST_DIR=.next-dev-africa&& node ./node_modules/next/dist/bin/next dev",
-    "build": "node ./node_modules/next/dist/bin/next build",
-    "start": "node ./node_modules/next/dist/bin/next start",
-    "preview": "node ./node_modules/next/dist/bin/next start"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite preview --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
-    "next": "15.5.24",
     "leaflet": "^1.9.4",
     "react-leaflet": "^4.2.1",
     "lucide-react": "^0.383.0",

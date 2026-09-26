@@ -1,0 +1,25 @@
+# Development Dockerfile for backend with hot reload
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt requirements-analytics.txt ./
+RUN pip install --no-cache-dir --timeout=300 --retries=3 -r requirements.txt -r requirements-analytics.txt
+
+# Copy source code
+COPY app ./app
+COPY scripts ./scripts
+
+# Train classifier (or skip if model exists)
+RUN python scripts/train_classifier.py || echo "Classifier training skipped"
+
+EXPOSE 8000
+
+# Use uvicorn with reload for development
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

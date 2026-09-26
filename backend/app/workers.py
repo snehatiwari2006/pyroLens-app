@@ -26,7 +26,7 @@ def ingest_firms() -> dict:
         # Repository-level de-duplication prevents repeat scheduled runs creating
         # duplicate incidents when a provider overlaps its observation window.
         written = repository.save_many(events)
-        repository.record_ingestion("firms", len(events), written)
+        repository.record_ingestion("firms", len(events), written, status="completed")
         return {"records_seen": len(events), "records_written": written}
     except FirmsNotConfiguredError as exc:
         repository.record_ingestion("firms", 0, 0, status="failed", error=str(exc))

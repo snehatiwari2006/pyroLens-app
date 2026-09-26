@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import dynamic from "next/dynamic";
+import React, { useState, Suspense, lazy } from "react";
 import { useApp } from "../context/AppContext.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
 import MapControls from "../components/MapControls.jsx";
@@ -7,12 +6,8 @@ import MapLegend from "../components/MapLegend.jsx";
 import Card from "../components/Card.jsx";
 import { SeverityPill } from "../components/StatusBadge.jsx";
 
-// Leaflet requires browser globals. Loading it only for this route keeps the
-// dashboard startup safe in Next.js while still rendering the interactive map.
-const FireMap = dynamic(() => import("../components/FireMap.jsx"), {
-  ssr: false,
-  loading: () => <div className="rounded-lg border border-line bg-white p-6 text-sm text-slateink">Loading Africa fire map…</div>,
-});
+// Dynamic import for Leaflet map component (avoids SSR issues)
+const FireMap = lazy(() => import("../components/FireMap.jsx").then(module => ({ default: module.default })));
 
 export default function FireMapPage() {
   const { incidents, openIncident, refreshError } = useApp();
@@ -33,7 +28,9 @@ export default function FireMapPage() {
       <div className="grid lg:grid-cols-4 gap-5">
         <div className="lg:col-span-3 space-y-4">
           <MapControls layers={layers} onToggle={toggle} showImpact={showImpact} onToggleImpact={() => setShowImpact((v) => !v)} />
-          <FireMap incidents={incidents} layers={layers} onSelect={setSelectedId} selectedId={selectedId} showImpact={showImpact} />
+          <Suspense fallback={<div className="rounded-lg border border-line bg-white p-6 text-sm text-slateink">Loading Africa fire map…</div>}>
+            <FireMap incidents={incidents} layers={layers} onSelect={setSelectedId} selectedId={selectedId} showImpact={showImpact} />
+          </Suspense>
           {refreshError && (
             <p className="rounded-md border border-critical/30 bg-criticalBg px-3 py-2 text-xs text-critical">
               Live hotspot data could not be loaded: {refreshError}

@@ -1,6 +1,7 @@
 from datetime import datetime
-
-from sqlalchemy import DateTime, Float, Integer, JSON, String, Text
+from uuid import uuid4
+import uuid as uuid_module
+from sqlalchemy import DateTime, Enum, Float, Integer, JSON, String, Text, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -38,11 +39,12 @@ class Incident(Base):
 class IngestionRun(Base):
     __tablename__ = "ingestion_runs"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid_module.uuid4)
     source: Mapped[str] = mapped_column(String(80))
-    status: Mapped[str] = mapped_column(String(30))
+    status: Mapped[str] = mapped_column(Enum("completed", "failed", "queued", name="ingestion_status", create_type=False), default="queued")
     records_seen: Mapped[int] = mapped_column(Integer, default=0)
-    records_written: Mapped[int] = mapped_column(Integer, default=0)
+    records_accepted: Mapped[int] = mapped_column(Integer, default=0)
+    records_rejected: Mapped[int] = mapped_column(Integer, default=0)
     error: Mapped[str] = mapped_column(Text, nullable=True)
     started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    finished_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    completed_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)

@@ -30,9 +30,9 @@ class Settings(BaseSettings):
     weather_api_key: str | None = None
     osm_overpass_url: str = "https://overpass-api.de/api/interpreter"
     osm_live_enabled: bool = True
-    monitoring_area_name: str = "Central Africa fire belt (Zambia–southern DRC)"
-    monitoring_latitude: float = -11.5
-    monitoring_longitude: float = 27.0
+    monitoring_area_name: str = "Malawi fire monitoring area"
+    monitoring_latitude: float = -9.38
+    monitoring_longitude: float = 33.01
     terrain_raster_path: str | None = None
     landcover_raster_path: str | None = None
     object_store_endpoint: str = "localhost:9000"
@@ -54,7 +54,7 @@ class Settings(BaseSettings):
     smtp_username: str | None = None
     smtp_password: str | None = None
     smtp_from_address: str | None = None
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = "http://localhost:8080,http://localhost:5173"
     celery_task_always_eager: bool = False
 
     model_config = SettingsConfigDict(

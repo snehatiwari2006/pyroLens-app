@@ -1,8 +1,106 @@
-node_modules
-dist
+# PyroLens .dockerignore
+# Optimizes Docker build context by excluding unnecessary files
+
+# Git
 .git
+.gitignore
+.github
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files (use .env.example instead)
 .env
-backend/.env
-backend/__pycache__
-backend/app/__pycache__
-*.pyc
+.env.*
+!.env.example
+!.env.production.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.venv/
+venv/
+ENV/
+env/
+backend/.venv/
+backend/*.db
+backend/*.db-journal
+backend/pyrolens.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.next/
+.next-dev/
+*.local
+
+# Vite
+.vite/
+
+# Docker
+.docker/
+docker-compose.override.yml
+docker-compose.override.yml.example
+
+# Test artifacts
+coverage/
+.nyc_output/
+junit.xml
+
+# Model artifacts (generated during build)
+backend/artifacts/*.joblib
+backend/artifacts/*.pkl
+backend/artifacts/*.model
+
+# Data files (large)
+*.pbf
+*.osm
+*.geojson
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.gpkg
+
+# Documentation (not needed in image)
+*.md
+!README.md
+docs/
+
+# Scripts (copied explicitly in Dockerfile)
+backend/tests/
+backend/scripts/__pycache__/
+
+# CI/CD
+.github/workflows/
+.github/dependabot.yml
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
