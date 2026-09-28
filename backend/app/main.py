@@ -130,6 +130,8 @@ async def startup() -> None:
                 conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN records_rejected INTEGER DEFAULT 0"))
             if 'completed_at' not in columns:
                 conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN completed_at TIMESTAMP WITHOUT TIME ZONE"))
+            if 'finished_at' not in columns:
+                conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN finished_at TIMESTAMP WITHOUT TIME ZONE"))
             conn.commit()
             print("Migration complete")
     except Exception as e:
