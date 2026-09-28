@@ -39,7 +39,7 @@ class Incident(Base):
 class IngestionRun(Base):
     __tablename__ = "ingestion_runs"
 
-    id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid_module.uuid4)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     source: Mapped[str] = mapped_column(String(80))
     status: Mapped[str] = mapped_column(Enum("completed", "failed", "queued", name="ingestion_status", create_type=False), default="queued")
     records_seen: Mapped[int] = mapped_column(Integer, default=0)
