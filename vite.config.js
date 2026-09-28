@@ -9,5 +9,9 @@ export default defineConfig({
       "/api": "http://localhost:8000",
       "/favicon.ico": "http://localhost:8000"
     },
+    allowedHosts: [
+      "pyrolens-web-x75h.onrender.com",
+      ".onrender.com"
+    ],
   },
 });
