@@ -4,9 +4,18 @@ from math import asin, cos, radians, sin, sqrt
 
 from sqlalchemy import select, text
 
-from .database import Base, SessionLocal, engine
 from .models import Incident, IngestionRun
 from .schemas import ThermalEvent
+
+
+def _get_db():
+    """Return an initialized database binding for API, worker, and test imports."""
+    from .database import Base, SessionLocal, engine, init_db
+
+    init_db()
+    # ``init_db`` updates the module globals, so bind them only after it runs.
+    from .database import SessionLocal, engine
+    return Base, SessionLocal, engine
 
 # Replace this repository with SQLAlchemy/PostGIS persistence without changing routes.
 _SEED_EVENTS = [
@@ -18,10 +27,12 @@ _SEED_EVENTS = [
 
 class EventRepository:
     def __init__(self):
-        Base.metadata.create_all(bind=engine)
+        Base, SessionLocal, engine = _get_db()
+        # _get_db() ensures the schema exists before seed data is read or written.
         self._seed()
 
     def _seed(self) -> None:
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             if db.scalar(select(Incident.id).limit(1)):
                 return
@@ -54,15 +65,18 @@ class EventRepository:
         )
 
     def list(self) -> list[ThermalEvent]:
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             return [self._to_schema(model) for model in db.scalars(select(Incident).order_by(Incident.created_at.desc())).all()]
 
     def get(self, event_id: str) -> ThermalEvent | None:
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             model = db.get(Incident, event_id)
             return self._to_schema(model) if model else None
 
     def save_many(self, events: list[ThermalEvent]) -> int:
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             written = 0
             for event in events:
@@ -81,6 +95,7 @@ class EventRepository:
 
     def nearby(self, latitude: float, longitude: float, radius_km: float) -> list[ThermalEvent]:
         """Use PostGIS in production and a geographic fallback for SQLite demos."""
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             if engine.dialect.name == "postgresql":
                 statement = text("""
@@ -106,6 +121,7 @@ class EventRepository:
             return [self._to_schema(model) for model in db.scalars(select(Incident)).all() if distance_km(model) <= radius_km]
 
     def record_ingestion(self, source: str, seen: int, written: int, status: str = "completed", error: str | None = None) -> int:
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             run = IngestionRun(source=source, status=status, records_seen=seen, records_accepted=written, completed_at=datetime.utcnow())
             db.add(run)
@@ -115,6 +131,7 @@ class EventRepository:
 
     def latest_ingestion(self, source: str) -> dict | None:
         """Return metadata for the most recent provider refresh, without payload data."""
+        Base, SessionLocal, engine = _get_db()
         with SessionLocal() as db:
             run = db.scalar(
                 select(IngestionRun)
@@ -131,5 +148,18 @@ class EventRepository:
                 "finished_at": run.completed_at,
                 "error": run.error,
             }
+
+    def update_location(self, event_id: str, location: str) -> bool:
+        """Update the location of an event (used by background geocoding)."""
+        Base, SessionLocal, engine = _get_db()
+        with SessionLocal() as db:
+            model = db.get(Incident, event_id)
+            if model:
+                model.location = location
+                model.updated_at = datetime.utcnow()
+                db.commit()
+                return True
+            return False
+
 
 repository = EventRepository()

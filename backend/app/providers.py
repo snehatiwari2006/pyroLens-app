@@ -21,7 +21,14 @@ class ThermalProvider(ABC):
 
 
 class FirmsProvider(ThermalProvider):
+    def __init__(self):
+        self._geocode_tasks: list[asyncio.Task] = []
+    
     async def fetch(self, request: dict) -> list[ThermalEvent]:
+        """Fetch FIRMS events without blocking on geocoding.
+        
+        Geocoding happens in background and updates the database.
+        """
         settings = get_settings()
         if not settings.firms_api_key:
             raise FirmsNotConfiguredError("FIRMS_API_KEY is not configured")
@@ -30,6 +37,7 @@ class FirmsProvider(ThermalProvider):
             raise ValueError("FIRMS bounding box must be west,south,east,north")
         area = ",".join(str(value) for value in bbox)
         days = max(1, int(request.get("days") or settings.firms_days))
+        max_records = int(request.get("max_records") or 500)  # Limit to prevent timeouts
         all_events = []
         
         # FIRMS API only supports 1 day per request, so fetch each day separately
@@ -42,22 +50,67 @@ class FirmsProvider(ThermalProvider):
                 date_obj = datetime.strptime(start_date, "%Y-%m-%d")
                 date_obj = date_obj + timedelta(days=day)
                 url += f"/{date_obj.strftime('%Y-%m-%d')}"
-            elif day > 0:
-                # Default to past days if no start_date specified
+            else:
+                # Default to past days (yesterday = day 0, day before = day 1, etc.)
+                # The default endpoint (no date) often returns empty for the current day
                 from datetime import datetime, timedelta
-                date_obj = datetime.now(timezone.utc) - timedelta(days=day)
+                date_obj = datetime.now(timezone.utc) - timedelta(days=day + 1)
                 url += f"/{date_obj.strftime('%Y-%m-%d')}"
             
-            async with httpx.AsyncClient(timeout=20) as client:
+            async with httpx.AsyncClient(timeout=30) as client:
                 response = await client.get(url)
                 response.raise_for_status()
             events = self._parse_csv(response.text, source="VIIRS")
-            # Enrich with addresses (create new events with updated location)
-            for event in events:
-                address = await geocoding_provider.reverse_geocode(event.latitude, event.longitude)
-                events[events.index(event)] = event.model_copy(update={"location": address})
+            
+            # Sort by FRP descending to get the most significant fires first
+            events.sort(key=lambda e: e.frp_mw, reverse=True)
+            
+            # Limit records to prevent timeouts
+            events = events[:max_records]
+            
+            # Schedule background geocoding for top events (non-blocking)
+            geocode_limit = min(50, len(events))
+            if geocode_limit > 0:
+                self._schedule_background_geocoding(events[:geocode_limit])
+            
             all_events.extend(events)
+            
+            # If we've hit the max records across all days, stop
+            if len(all_events) >= max_records:
+                all_events = all_events[:max_records]
+                break
         return all_events
+    
+    def _schedule_background_geocoding(self, events: list[ThermalEvent]) -> None:
+        """Start background geocoding task for events."""
+        task = asyncio.create_task(self._geocode_and_update(events))
+        self._geocode_tasks.append(task)
+        # Clean up completed tasks
+        self._geocode_tasks = [t for t in self._geocode_tasks if not t.done()]
+    
+    async def _geocode_and_update(self, events: list[ThermalEvent]) -> None:
+        """Geocode events and update their location in the database."""
+        for event in events:
+            try:
+                address = await geocoding_provider.reverse_geocode(event.latitude, event.longitude)
+                # Update in database - retry if event not yet saved (race condition at startup)
+                for attempt in range(3):
+                    if repository.update_location(event.id, address):
+                        break
+                    await asyncio.sleep(0.5 * (attempt + 1))
+                else:
+                    import logging
+                    logging.getLogger(__name__).warning(f"Background geocoding: event {event.id} not found in DB after retries")
+            except Exception as exc:
+                # Log but don't fail - geocoding is best-effort
+                import logging
+                logging.getLogger(__name__).warning(f"Background geocoding failed for {event.id}: {exc}")
+    
+    async def wait_for_geocoding(self) -> None:
+        """Wait for all background geocoding tasks to complete."""
+        if self._geocode_tasks:
+            await asyncio.gather(*self._geocode_tasks, return_exceptions=True)
+            self._geocode_tasks.clear()
 
     @staticmethod
     def _parse_csv(payload: str, source: str) -> list[ThermalEvent]:
@@ -150,7 +203,8 @@ class OsmProvider:
         if self._local_db_available:
             return True
         try:
-            from .database import SessionLocal
+            from .repository import _get_db
+            Base, SessionLocal, engine = _get_db()
             from sqlalchemy import text
             with SessionLocal() as db:
                 result = db.execute(text("SELECT 1 FROM planet_osm_point LIMIT 1"))
@@ -163,7 +217,8 @@ class OsmProvider:
     async def _query_local_osm(self, latitude: float, longitude: float, radius_m: int = 750) -> dict:
         """Query local PostGIS OSM tables for infrastructure near coordinates."""
         try:
-            from .database import SessionLocal
+            from .repository import _get_db
+            Base, SessionLocal, engine = _get_db()
             from sqlalchemy import text
             
             with SessionLocal() as db:

@@ -17,17 +17,24 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from .config import get_settings
-from .processing import assess_impact, assess_risk, classify
-from .providers import FirmsNotConfiguredError, firms_provider, osm_provider, weather_provider, startup_tasks, geocoding_provider
-from .repository import repository
+from .database import init_db
 from .storage import object_storage
 from .validation import validate_events
-from .workers import ingest_firms
 from .alerts import send_alert
 from .schemas import (
     ClassificationResponse, HealthResponse, ImpactResponse, IngestionRequest,
     IngestionResponse, JobResponse, RiskResponse, ThermalEvent, AlertRequest, AlertResponse,
 )
+
+# Initialize database tables BEFORE importing any modules that use the database.
+# ``init_db`` only creates missing tables, so this is safe on every restart.
+init_db()
+
+# Now import modules that depend on database tables
+from .processing import assess_impact, assess_risk, classify
+from .providers import FirmsNotConfiguredError, firms_provider, osm_provider, weather_provider, startup_tasks
+from .repository import repository
+from .workers import ingest_firms
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version="1.0.0", openapi_url="/api/v1/openapi.json", docs_url="/docs")
@@ -100,14 +107,11 @@ async def startup() -> None:
     if settings.firms_api_key:
         logger.info("Starting background FIRMS fetch for last 7 days...")
         print("Starting background FIRMS fetch for last 7 days...", flush=True)
+        # Run in background to avoid blocking server startup
+        import asyncio
         asyncio.create_task(_refresh_firms_after_startup())
     else:
         print("FIRMS_API_KEY not configured, skipping startup fetch", flush=True)
-
-
-@app.get("/health", response_model=HealthResponse, tags=["system"])
-async def health() -> HealthResponse:
-    return HealthResponse(status="ok", environment=settings.environment, model_version=settings.model_version)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
@@ -182,16 +186,7 @@ async def list_events(
         reverse=True,
     )[:limit]
     
-    # Enrich events with geocoding if they have default "NASA FIRMS coordinates" location
-    enriched_events = []
-    for event in sorted_events:
-        if event.location and event.location.startswith("NASA FIRMS coordinates:"):
-            address = await geocoding_provider.reverse_geocode(event.latitude, event.longitude)
-            enriched_events.append(event.model_copy(update={"location": address}))
-        else:
-            enriched_events.append(event)
-    
-    return enriched_events
+    return sorted_events
 
 
 @app.get("/api/v1/events/{event_id}", response_model=ThermalEvent, tags=["events"])
