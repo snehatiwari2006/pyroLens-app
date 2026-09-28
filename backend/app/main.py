@@ -113,6 +113,28 @@ async def startup() -> None:
     else:
         print("FIRMS_API_KEY not configured, skipping startup fetch", flush=True)
 
+    # Auto-migrate ingestion_runs table (PostgreSQL on Render)
+    try:
+        from .database import engine
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            result = conn.execute(text("""
+                SELECT column_name FROM information_schema.columns 
+                WHERE table_name = 'ingestion_runs'
+            """))
+            columns = {row[0] for row in result}
+            
+            if 'records_accepted' not in columns:
+                conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN records_accepted INTEGER DEFAULT 0"))
+            if 'records_rejected' not in columns:
+                conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN records_rejected INTEGER DEFAULT 0"))
+            if 'completed_at' not in columns:
+                conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN completed_at TIMESTAMP WITHOUT TIME ZONE"))
+            conn.commit()
+            print("Migration complete")
+    except Exception as e:
+        print(f"Migration warning: {e}")
+
 
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 async def health() -> HealthResponse:
