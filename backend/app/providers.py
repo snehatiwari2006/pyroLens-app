@@ -149,6 +149,50 @@ class FirmsProvider(ThermalProvider):
 class WeatherProvider:
     async def for_event(self, event: ThermalEvent) -> dict:
         settings = get_settings()
+        provider = getattr(settings, 'weather_provider', 'open-meteo')
+        
+        if provider == 'weatherstack':
+            return await self._fetch_weatherstack(event, settings)
+        else:
+            return await self._fetch_open_meteo(event, settings)
+    
+    async def _fetch_weatherstack(self, event: ThermalEvent, settings) -> dict:
+        """Fetch weather from WeatherStack API."""
+        try:
+            params = {
+                "access_key": settings.weather_api_key,
+                "query": f"{event.latitude},{event.longitude}",
+            }
+            async with httpx.AsyncClient(timeout=12) as client:
+                response = await client.get(settings.weather_base_url, params=params)
+                response.raise_for_status()
+            payload = response.json()
+            
+            if "error" in payload:
+                return {"wind_direction": "Unavailable", "wind_degrees": 0, "wind_speed_kmh": 0,
+                        "temperature_c": None, "humidity_pct": None, "elevation_m": None,
+                        "source": "unavailable", "error": f"WeatherStack error: {payload['error']['info']}"}
+            
+            current = payload["current"]
+            degrees = float(current["wind_degree"])
+            compass = ("North", "North-East", "East", "South-East", "South", "South-West", "West", "North-West")[round(degrees / 45) % 8]
+            
+            return {
+                "wind_direction": compass,
+                "wind_degrees": degrees,
+                "wind_speed_kmh": current["wind_speed"],
+                "temperature_c": current["temperature"],
+                "humidity_pct": current["humidity"],
+                "elevation_m": None,
+                "source": "weatherstack",
+            }
+        except (httpx.HTTPError, KeyError, TypeError, ValueError) as exc:
+            return {"wind_direction": "Unavailable", "wind_degrees": 0, "wind_speed_kmh": 0,
+                    "temperature_c": None, "humidity_pct": None, "elevation_m": None,
+                    "source": "unavailable", "error": f"WeatherStack request failed: {type(exc).__name__}"}
+    
+    async def _fetch_open_meteo(self, event: ThermalEvent, settings) -> dict:
+        """Fetch weather from Open-Meteo API (free, no key required)."""
         params = {
             "latitude": event.latitude,
             "longitude": event.longitude,
@@ -173,7 +217,6 @@ class WeatherProvider:
                 "source": "open-meteo",
             }
         except (httpx.HTTPError, KeyError, TypeError, ValueError) as exc:
-            # Do not invent weather conditions for a live incident decision.
             return {"wind_direction": "Unavailable", "wind_degrees": 0, "wind_speed_kmh": 0,
                     "temperature_c": None, "humidity_pct": None, "elevation_m": None,
                     "source": "unavailable", "error": f"Live weather request failed: {type(exc).__name__}"}

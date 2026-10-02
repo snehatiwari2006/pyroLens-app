@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     auto_refresh_firms_on_start: bool = False
     weather_base_url: str = "https://api.open-meteo.com/v1/forecast"
     weather_api_key: str | None = None
+    weather_provider: str = "open-meteo"  # "open-meteo" or "weatherstack"
     osm_overpass_url: str = "https://overpass-api.de/api/interpreter"
     osm_live_enabled: bool = True
     monitoring_area_name: str = "Malawi fire monitoring area"
