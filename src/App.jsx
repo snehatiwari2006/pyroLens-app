@@ -8,6 +8,7 @@ import WarningModal from "./components/WarningModal.jsx";
 import Home from "./pages/Home.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import FireMapPage from "./pages/FireMapPage.jsx";
+import FireMapPageLibre from "./pages/FireMapPageLibre.jsx";
 import Classification from "./pages/Classification.jsx";
 import ThermalPersistence from "./pages/ThermalPersistence.jsx";
 import ImpactAnalysis from "./pages/ImpactAnalysis.jsx";
@@ -19,11 +20,15 @@ import SatelliteDataCentre from "./pages/SatelliteDataCentre.jsx";
 import OsmIntelligence from "./pages/OsmIntelligence.jsx";
 import AreaMonitoring from "./pages/AreaMonitoring.jsx";
 import AlertsWarnings from "./pages/AlertsWarnings.jsx";
+import AlertManagement from "./pages/AlertManagement.jsx";
 import Incidents from "./pages/Incidents.jsx";
 import EmergencyResponse from "./pages/EmergencyResponse.jsx";
 import Reports from "./pages/Reports.jsx";
+import ReportBuilder from "./pages/ReportBuilder.jsx";
 import DemoMode from "./pages/DemoMode.jsx";
 import Settings from "./pages/Settings.jsx";
+import UserDashboard from "./pages/UserDashboard.jsx";
+import AdminPanel from "./pages/AdminPanel.jsx";
 
 function Shell() {
   const { drawerIncident, closeDrawer, issueWarning, warningIncident, warningConfirmed, confirmWarning, closeWarning } = useApp();
@@ -36,6 +41,7 @@ function Shell() {
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/map" element={<FireMapPage />} />
+          <Route path="/map-libre" element={<FireMapPageLibre />} />
           <Route path="/classification" element={<Classification />} />
           <Route path="/thermal-persistence" element={<ThermalPersistence />} />
           <Route path="/impact" element={<ImpactAnalysis />} />
@@ -47,11 +53,15 @@ function Shell() {
           <Route path="/osm" element={<OsmIntelligence />} />
           <Route path="/area-monitoring" element={<AreaMonitoring />} />
           <Route path="/alerts" element={<AlertsWarnings />} />
+          <Route path="/alert-management" element={<AlertManagement />} />
           <Route path="/incidents" element={<Incidents />} />
           <Route path="/response" element={<EmergencyResponse />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/report-builder" element={<ReportBuilder />} />
           <Route path="/demo" element={<DemoMode />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/user" element={<UserDashboard />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
 

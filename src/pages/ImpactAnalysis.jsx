@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Compass, Info, RefreshCw } from "lucide-react";
+import { Compass, Info, RefreshCw, Brain } from "lucide-react";
 import { useApp } from "../context/AppContext.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
 import Card from "../components/Card.jsx";
@@ -8,6 +8,7 @@ import Field from "../components/Field.jsx";
 import { AiTag, Disclaimer } from "../components/AIInsightCard.jsx";
 import { IMPACT_ZONE_RINGS } from "../data/impactData.js";
 import { estimateImpact } from "../services/impactService.js";
+import { SHAPFeatureImportance } from "../components/SHAPVisualization.jsx";
 
 const BEARING_VECTORS = {
   North: { x: 50, y: 14, labelX: 53, labelY: 17 },
@@ -224,6 +225,29 @@ export default function ImpactAnalysis() {
           </Card>
 
           <Disclaimer compact />
+        </div>
+
+        {/* SHAP Explainability Card */}
+        <div className="space-y-5">
+          <Card accent="purple" hoverLift={false}>
+            <div className="flex items-center gap-2 mb-3">
+              <Brain size={16} className="text-purple-600" />
+              <h3 className="font-bold text-sm text-ink tracking-tight">Model Explainability (SHAP)</h3>
+            </div>
+            <SHAPFeatureImportance 
+              shapValues={impact?.shap_values ?? [
+                { feature: "Wind Speed", value: 0.142 },
+                { feature: "Wind Direction (aligned)", value: 0.098 },
+                { feature: "FRP Intensity", value: 0.067 },
+                { feature: "Relative Humidity", value: -0.045 },
+                { feature: "Terrain Slope", value: 0.038 },
+                { feature: "Fuel Load", value: 0.029 },
+                { feature: "Temperature", value: 0.021 },
+                { feature: "Land Cover Type", value: 0.015 },
+              ]}
+              title="Spread Prediction Drivers"
+            />
+          </Card>
         </div>
 
       </div>

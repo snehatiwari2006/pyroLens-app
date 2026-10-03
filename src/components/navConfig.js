@@ -2,6 +2,7 @@ import {
   Home as HomeIcon, LayoutDashboard, Map as MapIcon, BrainCircuit, ScanLine, Compass,
   Boxes, ShieldCheck, BarChart3, TrendingUp, SatelliteDish, Globe2, PinIcon, Siren,
   ClipboardList, Truck, FileBarChart2, PlayCircle, Settings as SettingsIcon,
+  Bell, User, Shield, FileText, LayoutGrid, Cpu, Server, Activity,
 } from "lucide-react";
 
 export const NAV = [
@@ -10,7 +11,8 @@ export const NAV = [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   ]},
   { group: "Fire Intelligence", items: [
-    { path: "/map", label: "Fire Intelligence Map", icon: MapIcon },
+    { path: "/map", label: "Fire Intelligence Map (Leaflet)", icon: MapIcon },
+    { path: "/map-libre", label: "Fire Intelligence Map (MapLibre)", icon: LayoutGrid },
     { path: "/classification", label: "AI Classification", icon: BrainCircuit },
     { path: "/thermal-persistence", label: "Thermal Persistence", icon: ScanLine },
   ]},
@@ -30,12 +32,18 @@ export const NAV = [
   ]},
   { group: "Operations", items: [
     { path: "/alerts", label: "Alerts & Warnings", icon: Siren },
+    { path: "/alert-management", label: "Alert Management", icon: Bell },
     { path: "/incidents", label: "Incidents", icon: ClipboardList },
     { path: "/response", label: "Emergency Response", icon: Truck },
   ]},
   { group: "Management", items: [
     { path: "/reports", label: "Reports", icon: FileBarChart2 },
+    { path: "/report-builder", label: "Report Builder", icon: FileText },
     { path: "/demo", label: "Demo Mode", icon: PlayCircle },
     { path: "/settings", label: "Settings", icon: SettingsIcon },
+  ]},
+  { group: "Account & Admin", items: [
+    { path: "/user", label: "User Dashboard", icon: User },
+    { path: "/admin", label: "Admin Panel", icon: Shield },
   ]},
 ];
