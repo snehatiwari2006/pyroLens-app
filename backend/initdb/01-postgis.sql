@@ -76,11 +76,13 @@ CREATE TABLE IF NOT EXISTS ingestion_runs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     source VARCHAR(64) NOT NULL,
     records_seen INTEGER NOT NULL DEFAULT 0,
+    records_written INTEGER NOT NULL DEFAULT 0,
     records_accepted INTEGER NOT NULL DEFAULT 0,
     records_rejected INTEGER NOT NULL DEFAULT 0,
     status ingestion_status NOT NULL DEFAULT 'queued',
     error TEXT,
     started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    finished_at TIMESTAMPTZ,
     completed_at TIMESTAMPTZ
 );
 
