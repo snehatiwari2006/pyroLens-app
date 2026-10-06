@@ -29,6 +29,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built assets from builder stage
 COPY --from=builder /web/dist /usr/share/nginx/html
 
+# Add favicon.ico as physical file (fallback for exact match location)
+RUN echo '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#dc2626"/><path d="M50 15 L50 85 M35 50 L65 50" stroke="white" stroke-width="8" stroke-linecap="round"/></svg>' > /usr/share/nginx/html/favicon.ico
+
 # Add health check endpoint
 RUN echo 'server { listen 80; location /health { return 200 "healthy\n"; add_header Content-Type text/plain; } }' > /etc/nginx/conf.d/health.conf
 
