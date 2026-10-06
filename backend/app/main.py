@@ -128,6 +128,8 @@ async def startup() -> None:
                 conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN records_accepted INTEGER DEFAULT 0"))
             if 'records_rejected' not in columns:
                 conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN records_rejected INTEGER DEFAULT 0"))
+            if 'records_written' not in columns:
+                conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN records_written INTEGER DEFAULT 0"))
             if 'completed_at' not in columns:
                 conn.execute(text("ALTER TABLE ingestion_runs ADD COLUMN completed_at TIMESTAMP WITHOUT TIME ZONE"))
             if 'finished_at' not in columns:
