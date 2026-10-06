@@ -73,7 +73,7 @@ CREATE INDEX IF NOT EXISTS idx_thermal_events_risk_score ON thermal_events (risk
 
 -- Ingestion runs table
 CREATE TABLE IF NOT EXISTS ingestion_runs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id SERIAL PRIMARY KEY,
     source VARCHAR(64) NOT NULL,
     records_seen INTEGER NOT NULL DEFAULT 0,
     records_written INTEGER NOT NULL DEFAULT 0,
