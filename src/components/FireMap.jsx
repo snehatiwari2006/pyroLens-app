@@ -50,7 +50,8 @@ export default function FireMap({ incidents, layers, onSelect, selectedId, showI
         <MapViewport center={center} />
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          subdomains="abc"
         />
         {layers.satellite && (
           <TileLayer
